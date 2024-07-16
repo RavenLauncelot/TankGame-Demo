@@ -81,7 +81,7 @@ public partial class @TankControls: IInputActionCollection2, IDisposable
                     ""id"": ""43553de8-ebb2-4638-b1ee-32d63af7d85b"",
                     ""path"": ""<Mouse>/delta"",
                     ""interactions"": """",
-                    ""processors"": ""InvertVector2(invertX=false),ScaleVector2"",
+                    ""processors"": ""InvertVector2(invertX=false),ScaleVector2(x=0.1,y=0.1)"",
                     ""groups"": """",
                     ""action"": ""turret"",
                     ""isComposite"": false,
