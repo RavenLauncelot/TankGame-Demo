@@ -101,7 +101,7 @@ public class tankMain : MonoBehaviour
 		//currentTurretRotation = TurretPivot.localEulerAngles.y;
 		//currentSpeed = Vector3.Dot(transform.forward, RB.velocity);
 
-		//rTrackTorque = rightTrack[0].motorTorque;
+		//rTrackTorque = rightTrack[0].motorTorque;                //these debug values arent used anymore
 		//lTrackTorque = leftTrack[0].motorTorque;
 		//rBrakingTorque = rightTrack[0].brakeTorque;
 		//lBrakingTorque = leftTrack[0].brakeTorque;
@@ -116,18 +116,16 @@ public class tankMain : MonoBehaviour
 	void FixedUpdate(){
 		//doing movement for the turret 
 
-		Vector3 turretYaw = new Vector3(0 ,0 ,0);
-		turretYaw.y = turretVecIn.x * maxTurretSpeed * Time.deltaTime;
-		TurretPivot.Rotate(turretYaw);
+		//Vector3 turretYaw = new Vector3(0 ,0 ,0);
+		//turretYaw.y = turretVecIn.x * maxTurretSpeed * Time.deltaTime;
+		//TurretPivot.Rotate(turretYaw);
 
-		Vector3 turretPitch = new Vector3(0 , 0 ,0);
-		turretPitch.x = turretVecIn.y * maxTurretSpeed * Time.deltaTime;
-		turretPitch.x = Mathf.Clamp(turretPitch.x, minGunPitch-currentGunPitch, maxGunPitch-currentGunPitch);
-		GunPivot.Rotate(turretPitch);
+		//Vector3 turretPitch = new Vector3(0 , 0 ,0);
+		//turretPitch.x = turretVecIn.y * maxTurretSpeed * Time.deltaTime;
+		//turretPitch.x = Mathf.Clamp(turretPitch.x, minGunPitch-currentGunPitch, maxGunPitch-currentGunPitch);
+		//GunPivot.Rotate(turretPitch);
 		
-		currentGunPitch += turretPitch.x;
-		
-		Debug.Log("turret pitch: " + turretPitch.x);
+		//currentGunPitch += turretPitch.x;
 
 		trackMovement(rightTrack, leftTrack, movementVecIn.x, movementVecIn.y);  //this is all dealt within a seperate function. Doing this won't make it more effcient but it will make the code a lot more readable as whole.
 	}
@@ -280,6 +278,12 @@ public class tankMain : MonoBehaviour
 		
 		return null;
 	}
+
+	//private Vector2 InputSmoothing(Vector2 input)
+	//{
+	//	get the input
+	//	return null;
+	//}
 }
 
  
