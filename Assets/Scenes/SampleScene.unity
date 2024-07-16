@@ -1004,9 +1004,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   turretYawSpeed: 20
-  turretPitchSpeed: 3
+  turretPitchSpeed: 10
   minPitch: -25
   maxPitch: 12.56
+  currentGunPitch: 0
   camPivotY: {fileID: 428726654}
   camPivotX: {fileID: 259365178}
   gunPivotX: {fileID: 659852905}
@@ -1405,8 +1406,8 @@ MonoBehaviour:
   pivotX: {fileID: 259365178}
   scopedCameraObj: {fileID: 1408729305}
   normalCameraObj: {fileID: 1937820451}
-  camSpeedX: 20
-  camSpeedY: 20
+  camSpeedX: 60
+  camSpeedY: 60
   maxCamPitch: 80
   minCamPitch: -80
 --- !u!1 &444789560
