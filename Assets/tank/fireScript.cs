@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -166,7 +165,7 @@ public class fireScript : MonoBehaviour
 			{
 				Debug.Log("Ricochet, chance of hit: " + penChance);
 				
-				Instantiate(ricochetEffect, colEvents[i].intersection, Quaternion.LookRotation(Vector3.Reflect(-colEvents[i].velocity.normalized, colEvents[i].normal)));
+				Instantiate(ricochetEffect, colEvents[i].intersection, Quaternion.LookRotation(Vector3.Reflect(colEvents[i].velocity.normalized, colEvents[i].normal)));
 			}
 		}
 	}

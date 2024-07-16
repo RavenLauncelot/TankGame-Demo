@@ -18,6 +18,8 @@ public class cameraController : MonoBehaviour
 
     private Camera scopeCam;
     private Camera normalCam;
+    private AudioListener scopeCamAudio;
+    private AudioListener normalCamAudio;
 
     private Vector2 turretVec;
 
@@ -105,8 +107,10 @@ public class cameraController : MonoBehaviour
 
     private void camZoom(InputAction.CallbackContext obj)
     {
-        scopeCam.enabled = !scopeCam.enabled;        //will just invert whether they are enabled or not one will be set to false when the program starts
+        scopeCam.enabled = !scopeCam.enabled;              //will just invert whether they are enabled or not one will be set to false when the program starts
+        scopeCamAudio.enabled = !scopeCamAudio.enabled;    //this applies aswell to the audio listener
         normalCam.enabled = !normalCam.enabled;
+        normalCamAudio.enabled = !normalCamAudio.enabled;
 
         thirdPerson = !thirdPerson;
     }
