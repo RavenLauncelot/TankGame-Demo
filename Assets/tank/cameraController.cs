@@ -59,6 +59,8 @@ public class cameraController : MonoBehaviour
 	{
 		scopeCam = scopedCameraObj.GetComponent<Camera>();
 		normalCam = normalCameraObj.GetComponent<Camera>();
+		scopeCamAudio = scopeCam.GetComponent<AudioListener>();
+		normalCamAudio = normalCam.GetComponent<AudioListener>();
 
 		pivotY = this.GetComponent<Transform>();
 
@@ -67,6 +69,7 @@ public class cameraController : MonoBehaviour
 		currentCamPitch = 0;
 
 		scopeCam.enabled = false;
+		scopeCamAudio.enabled = false;
 		normalCam.enabled = true;
 		thirdPerson = true;
 	}
@@ -114,5 +117,10 @@ public class cameraController : MonoBehaviour
 		normalCamAudio.enabled = !normalCamAudio.enabled;
 
 		thirdPerson = !thirdPerson;
+	}
+	
+	public float getCamXAngle()
+	{
+		return currentCamPitch;	
 	}
 }

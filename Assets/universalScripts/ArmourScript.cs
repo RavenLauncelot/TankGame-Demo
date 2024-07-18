@@ -34,7 +34,7 @@ public class ArmourScript : MonoBehaviour
 		
 		else
 		{
-			this.GetComponent<Renderer>().material.SetColor("_Color", new Color(255f, 255f, 255f * (health/setHealth), 255f * (health/setHealth))); 
+			this.GetComponent<Renderer>().material.SetColor("_Color", new Color(1f, 1f, (health/setHealth), 1)); 
 		}
 	}
 	

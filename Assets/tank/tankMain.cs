@@ -44,10 +44,6 @@ public class tankMain : MonoBehaviour
 	public float maxSpeed = 500;
 	public float initialTorque = 2000;
 	public float brakingTorque = 1000;
-	
-	private float maxGunPitch = 11.89f;
-	private float minGunPitch = -25f;
-	private float currentGunPitch = 0;
 
 	//debug public variables
 	//public float currentTurretRotation;
@@ -114,19 +110,6 @@ public class tankMain : MonoBehaviour
 	}
 
 	void FixedUpdate(){
-		//doing movement for the turret 
-
-		//Vector3 turretYaw = new Vector3(0 ,0 ,0);
-		//turretYaw.y = turretVecIn.x * maxTurretSpeed * Time.deltaTime;
-		//TurretPivot.Rotate(turretYaw);
-
-		//Vector3 turretPitch = new Vector3(0 , 0 ,0);
-		//turretPitch.x = turretVecIn.y * maxTurretSpeed * Time.deltaTime;
-		//turretPitch.x = Mathf.Clamp(turretPitch.x, minGunPitch-currentGunPitch, maxGunPitch-currentGunPitch);
-		//GunPivot.Rotate(turretPitch);
-		
-		//currentGunPitch += turretPitch.x;
-
 		trackMovement(rightTrack, leftTrack, movementVecIn.x, movementVecIn.y);  //this is all dealt within a seperate function. Doing this won't make it more effcient but it will make the code a lot more readable as whole.
 	}
 
@@ -138,13 +121,13 @@ public class tankMain : MonoBehaviour
 		{
 			foreach (WheelCollider sprocket in rTrack)
 			{
-				sprocket.brakeTorque = 200;
+				sprocket.brakeTorque = 400;
 				sprocket.motorTorque = 0;          
 			}
 
 			foreach (WheelCollider sprocket in lTrack)
 			{
-				sprocket.brakeTorque = 200;
+				sprocket.brakeTorque = 400;
 				sprocket.motorTorque = 0;
 			}
 
