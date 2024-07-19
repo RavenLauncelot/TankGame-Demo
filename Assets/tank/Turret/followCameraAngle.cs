@@ -13,7 +13,9 @@ public class followCameraAngle : MonoBehaviour
 	public float minPitch;
 	public float maxPitch;
 
+	
 	public float currentGunPitch;
+	
 	public float currentCamPitch;
 	float previousCameraPitch;
 
@@ -41,16 +43,15 @@ public class followCameraAngle : MonoBehaviour
 		//this for the spinning there are no limits so this is very straight forward
 		gunPivotY.localRotation = Quaternion.RotateTowards(gunPivotY.localRotation, camPivotY.localRotation, turretYawSpeed * Time.deltaTime);   //because ive split the axis into seperate gameobjects in the editor i dont need need to single out the axis i want to move 
 
-
 		//because thee x axis has to move within limit I had to change the code to clamp it if it moves out of bounds
 		Vector3 pitchAmount = new Vector3(pitchDirection(gunPivotX.localRotation, camPivotX.localRotation)*turretPitchSpeed*Time.deltaTime, 0, 0);
 		pitchAmount.x = Mathf.Clamp(pitchAmount.x, minPitch - currentGunPitch, maxPitch - currentGunPitch);
 		
-		float difference = currentCamPitch - currentGunPitch;
+		float difference = Mathf.Clamp(currentCamPitch, minPitch, maxPitch) - currentGunPitch;
 		
-		Debug.Log("StepAmount: " + pitchAmount.x + " Difference: " + difference + "Down pitch remaining" + (minPitch - currentGunPitch) + "Current gun pitch: " + currentGunPitch);
+		//Debug.Log("StepAmount: " + pitchAmount.x + " Difference: " + difference + "Down pitch remaining" + (minPitch - currentGunPitch) + "Current gun pitch: " + currentGunPitch);
 		
-		if (pitchAmount.x >= difference)   //if the pitchamount will overshoot the angle the camera is facing it will directly set it to its rotaion by the amount required
+		if (Mathf.Abs(pitchAmount.x) > Mathf.Abs(difference))   //if the pitchamount will overshoot the angle the camera is facing it will directly set it to its rotaion by the amount required
 		{
 			pitchAmount.x = difference;  //i need to set this to pitchamoutn otherwise it will lose track of its position when its added to currentGunPitch it also means less if statements 
 		}
@@ -58,6 +59,8 @@ public class followCameraAngle : MonoBehaviour
 		{
 			difference = 999;
 		}
+		
+		Debug.Log("pitchamount: " + pitchAmount.x + " difference: " + difference);
 
 		gunPivotX.Rotate(pitchAmount);
 		
