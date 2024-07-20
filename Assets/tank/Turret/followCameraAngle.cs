@@ -49,8 +49,6 @@ public class followCameraAngle : MonoBehaviour
 		
 		float difference = Mathf.Clamp(currentCamPitch, minPitch, maxPitch) - currentGunPitch;
 		
-		//Debug.Log("StepAmount: " + pitchAmount.x + " Difference: " + difference + "Down pitch remaining" + (minPitch - currentGunPitch) + "Current gun pitch: " + currentGunPitch);
-		
 		if (Mathf.Abs(pitchAmount.x) > Mathf.Abs(difference))   //if the pitchamount will overshoot the angle the camera is facing it will directly set it to its rotaion by the amount required
 		{
 			pitchAmount.x = difference;  //i need to set this to pitchamoutn otherwise it will lose track of its position when its added to currentGunPitch it also means less if statements 
@@ -59,8 +57,6 @@ public class followCameraAngle : MonoBehaviour
 		{
 			difference = 999;
 		}
-		
-		Debug.Log("pitchamount: " + pitchAmount.x + " difference: " + difference);
 
 		gunPivotX.Rotate(pitchAmount);
 		

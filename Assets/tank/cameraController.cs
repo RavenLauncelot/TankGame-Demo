@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -8,6 +9,7 @@ public class cameraController : MonoBehaviour
 {
 	Transform pivotY;
 	public Transform pivotX;  //this is a child of the pivotY where this script is located
+	Transform cameraTF;
 
 	private InputAction zoomIn;
 	private InputAction turretInput;
@@ -16,7 +18,7 @@ public class cameraController : MonoBehaviour
 	[SerializeField] private GameObject scopedCameraObj;
 	[SerializeField] private GameObject normalCameraObj;
 
-	private Camera scopeCam;
+	private Camera scopeCam;    //these are so i can enable and disable the cameras depending on when im using them
 	private Camera normalCam;
 	private AudioListener scopeCamAudio;
 	private AudioListener normalCamAudio;
@@ -30,6 +32,8 @@ public class cameraController : MonoBehaviour
 	public float camSpeedY;
 	public float maxCamPitch;   //this is so the camera wont do backflips or front flips
 	public float minCamPitch;
+	
+	float maxDistance;   //this is the max distance from the pivot point. this does not hold value until the game starts. its set based of its current positon in the editor
 
 	void Awake()
 	{
@@ -72,6 +76,9 @@ public class cameraController : MonoBehaviour
 		scopeCamAudio.enabled = false;
 		normalCam.enabled = true;
 		thirdPerson = true;
+		
+		cameraTF = normalCam.gameObject.GetComponent<Transform>();
+		maxDistance = cameraTF.localPosition.z;
 	}
 
 	private void Update()
@@ -97,6 +104,23 @@ public class cameraController : MonoBehaviour
 			pivotX.Rotate(turretCamX);
 
 			currentCamPitch += turretCamX.x;
+			
+			
+			//this will shoot a ray backward where the camera is. if its hits a object it will move the camera to where it has hit so it doesnt phase through objects 
+			RaycastHit hit;
+			Ray ray = new Ray(pivotX.position, -pivotX.forward);
+			Debug.DrawRay(pivotX.position, pivotX.forward * maxDistance, Color.red);  //the ray comes from the X pivot as that is the final axis of movement - maxdistance is already negative so im using a forward vector
+			
+			if (Physics.Raycast(ray, out hit, -maxDistance))  //if the camera is going to phase through an object
+			{
+				cameraTF.position = hit.point;
+				Debug.Log("Camera Clipping");
+			}
+			else
+			{
+				Debug.Log("camera not clipping");
+				cameraTF.localPosition = new Vector3(0, 0, maxDistance);
+			}
 		}
 
 		else
@@ -104,9 +128,6 @@ public class cameraController : MonoBehaviour
 			//the gun will now not follow the camera and use the input from the mouse
 			//will handle ui elements while camera is fixed to the gun
 		}
-
-		//use the input for the turret in here instead 
-		//let it control the camera which the turret will then follow instead
 	}
 
 	private void camZoom(InputAction.CallbackContext obj)
