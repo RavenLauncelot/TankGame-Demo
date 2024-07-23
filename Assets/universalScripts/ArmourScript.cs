@@ -11,7 +11,7 @@ public class ArmourScript : MonoBehaviour
 	public float setThickness;
 	public string setPartName;
 	
-	private float health;
+	public float health;
 	private float armourThickness;
 	private string partName;
 	

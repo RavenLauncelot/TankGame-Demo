@@ -62,8 +62,7 @@ public class fireScript : MonoBehaviour
 			StartCoroutine((reloadTimer())); 
 			
 			Vector3 direction = turretTF.position - TF.position;  //the vector from this object (end of the barrel) to the gun pivot
-			mainRB.AddForceAtPosition(direction.normalized * recoilPower, this.transform.position, ForceMode.Impulse);
-			Debug.Log("Recoil direction: " + direction);
+			mainRB.AddForceAtPosition(direction.normalized * recoilPower, this.transform.position, ForceMode.Impulse);   //this simulates recoil and pushed back on the tankgun
 		}
 	}
 	
@@ -167,6 +166,23 @@ public class fireScript : MonoBehaviour
 				
 				Instantiate(ricochetEffect, colEvents[i].intersection, Quaternion.LookRotation(Vector3.Reflect(colEvents[i].velocity.normalized, colEvents[i].normal)));
 			}
+		}
+	}
+	
+	public Vector3 getTarget()   //ignore this for now 
+	{
+		Debug.DrawRay(TF.position, TF.forward * 100, Color.blue);
+		Ray ray = new Ray(TF.position, TF.forward);
+		RaycastHit hit;
+		if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+		{
+			Debug.Log("Target: " + hit.point);
+			return hit.point;	
+		}
+		else
+		{
+			Debug.Log("Not Hitting");
+			return ray.GetPoint(2000);
 		}
 	}
 }
