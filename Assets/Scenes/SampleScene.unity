@@ -240,10 +240,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cda98b9349ea2e46b63694a589c1c7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  setHealth: 800
-  setThickness: 500
-  setPartName: 
   health: 0
+  armourThickness: 0
+  partName: 
 --- !u!1 &49504295
 GameObject:
   m_ObjectHideFlags: 0
@@ -531,12 +530,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb4c5dd122161c34587c6ee01541e832, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  turretMovement: {fileID: 0}
+  fireScript: {fileID: 0}
   TankTrackL: {fileID: 1517718774906522510}
   TankTrackR: {fileID: 735222987607821244}
   TurretPivot: {fileID: 208462186}
   GunPivot: {fileID: 659852905}
-  maxTurretSpeed: 70
-  maxGunSpeed: 70
   maxTurnSpeed: 250
   maxSpeed: 1000
   initialTorque: 2000
@@ -2277,10 +2276,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cda98b9349ea2e46b63694a589c1c7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  setHealth: 800
-  setThickness: 500
-  setPartName: 
   health: 0
+  armourThickness: 0
+  partName: 
 --- !u!1 &879667083
 GameObject:
   m_ObjectHideFlags: 0
@@ -2905,7 +2903,7 @@ Transform:
   m_GameObject: {fileID: 1080875190}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.004, y: -0.138, z: 6.372}
+  m_LocalPosition: {x: 0, y: 0, z: 6.372}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9932,10 +9930,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cda98b9349ea2e46b63694a589c1c7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  setHealth: 800
-  setThickness: 500
-  setPartName: 
   health: 0
+  armourThickness: 0
+  partName: 
 --- !u!1 &1937820451
 GameObject:
   m_ObjectHideFlags: 0
@@ -11017,13 +11014,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 785630476696870051}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.47961298, y: 0.47961298, z: 0.5195877, w: 0.5195877}
-  m_LocalPosition: {x: 0, y: 0.009, z: 2.019}
+  m_LocalRotation: {x: -0.48534265, y: 0.48534265, z: 0.5142398, w: 0.5142398}
+  m_LocalPosition: {x: 0, y: 0.06, z: 2.02}
   m_LocalScale: {x: 40.899998, y: 40.899998, z: 40.899998}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 659852905}
-  m_LocalEulerAnglesHint: {x: -94.582, y: 180, z: -90}
+  m_LocalEulerAnglesHint: {x: -93.312, y: 180, z: -90}
 --- !u!4 &633048238298063269
 Transform:
   m_ObjectHideFlags: 0
@@ -11132,7 +11129,7 @@ Transform:
   m_GameObject: {fileID: 6523691306154281407}
   serializedVersion: 2
   m_LocalRotation: {x: -0.5, y: 0.5, z: 0.5, w: 0.5}
-  m_LocalPosition: {x: 0, y: -0.5207906, z: -1.417036}
+  m_LocalPosition: {x: 0, y: -0.52, z: -1.417036}
   m_LocalScale: {x: 40.899998, y: 40.899998, z: 40.899998}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11312,10 +11309,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cda98b9349ea2e46b63694a589c1c7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  setHealth: 600
-  setThickness: 400
-  setPartName: turret
   health: 0
+  armourThickness: 0
+  partName: 
 --- !u!33 &6304303167358113864
 MeshFilter:
   m_ObjectHideFlags: 0

@@ -5,20 +5,22 @@ using System.Security.Cryptography;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Animations;
+using UnityEngine.TextCore.LowLevel;
 
 public class gunController : MonoBehaviour
 {
 
-	public float turretYawSpeed;
-	public float turretPitchSpeed;
+    [SerializeField] private float turretYawSpeed;
+    [SerializeField] private float turretPitchSpeed;
 
-	public float minPitch;
-	public float maxPitch;
+    [SerializeField] private float minPitch;
+    [SerializeField] private float maxPitch;
 
-	
-	public float currentGunPitch;
-	
-	public float currentCamPitch;
+
+    [SerializeField] private float currentGunPitch;
+
+    [SerializeField] private float currentCamPitch;
+
 	float previousCameraPitch;
 
 	public Transform camPivotY;
@@ -137,4 +139,24 @@ public class gunController : MonoBehaviour
 			return -1f;
 		}
 	}
+
+	public void adjustTurretYaw(float modifier)
+	{
+		if (modifier < 0f || modifier > 1f)  //this checks if the input is invalid or not 
+		{
+			return;  //if its invalid it breaks
+		}
+
+		turretYawSpeed = turretYawSpeed * modifier;
+	}
+
+	public void adjustTurretPitch(float modifier)
+	{
+        if (modifier < 0f || modifier > 1f)  //this checks if the input is invalid or not 
+        {
+            return;  //if its invalid it breaks
+        }
+
+		turretPitchSpeed = turretPitchSpeed * modifier;
+    }
 }

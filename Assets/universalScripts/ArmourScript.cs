@@ -7,22 +7,19 @@ public class ArmourScript : MonoBehaviour
 	//This script is going to be used on multiple differnet types of objects 
 	//I did this so that i dont need to program my particlesystem to work with lots of different scripts
 	
-	public float setHealth;         //this is so i can set the health in the editor then the private version are set to these values
-	public float setThickness;
-	public string setPartName;
 	
-	public float health;
-	private float armourThickness;
-	private string partName;
-	
+	[SerializeField] private float health;
+    [SerializeField] private float armourThickness;
+    [SerializeField] private string partName;
+
+	private float initialHealth;
+
 	Renderer rend;
 	
 	private void Start()
 	{
 		rend = this.GetComponent<Renderer>();
-		health = setHealth;
-		armourThickness = setThickness;
-		partName = setPartName;
+		initialHealth = health;
 	}
 	
 	private void Update()
@@ -34,7 +31,7 @@ public class ArmourScript : MonoBehaviour
 		
 		else
 		{
-			this.GetComponent<Renderer>().material.SetColor("_Color", new Color(1f, 1f, (health/setHealth), 1)); 
+			this.GetComponent<Renderer>().material.SetColor("_Color", new Color(1f, 1f, (health/initialHealth), 1)); 
 		}
 	}
 	
@@ -53,5 +50,10 @@ public class ArmourScript : MonoBehaviour
 	public string getName()
 	{
 		return partName;
+	}
+
+	public float getHealth()
+	{
+		return health;
 	}
 }

@@ -4,15 +4,20 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
-using System;
 using Unity.Properties;
 using UnityEngine.ParticleSystemJobs;
 using JetBrains.Annotations;
+using System.ComponentModel.Design;
+using System.Runtime.CompilerServices;
 
 public class tankMain : MonoBehaviour
 {
 
 	public TankControls controls;  //geting the script generated from the unity input system
+
+	//I need these to adjust the values for when a part gets damaged
+	public gunController turretMovement;
+	public fireScript fireScript;
 
 	//setting up the individual control inputs
 	private InputAction movement;
@@ -36,33 +41,25 @@ public class tankMain : MonoBehaviour
 	Rigidbody RB;
 	Transform TF;
 
-	//set variables for things like speed
-	public float maxTurretSpeed = 10f;
-	public float maxGunSpeed = 10f;
-	
-	public float maxTurnSpeed = 300;    
-	public float maxSpeed = 500;
-	public float initialTorque = 2000;
-	public float brakingTorque = 1000;
+	//variables for things like speed
+    [SerializeField] private float maxTurnSpeed = 300;
+    [SerializeField] private float maxSpeed = 500;
+    [SerializeField] private float initialTorque = 2000;
+    [SerializeField] private float brakingTorque = 1000;
 
-	//debug public variables
-	//public float currentTurretRotation;
+	//these modifie the amount of torque a track receives
+	private float rTrackModifier = 1f;
+	private float lTrackModifier = 1f;
+
 	private float currentSpeed;
 
-	//public float rTrackTorque;  //old debug variables im keeping them commented just in case i need them
-	//public float lTrackTorque;
-	//public float rBrakingTorque;
-	//public float lBrakingTorque;
-	//public float rWheelSpeed;
-	//public float lWheelSpeed;
-
-	void Awake(){
+	void Awake()
+	{
 		controls = new TankControls();
-
-		//TankTrackL ,TankTrackR.GetComponent<Rigidbody>().
 	}
 
-	void OnEnable(){
+	void OnEnable()
+	{
 		//enabling each control for the tank 
 		movement = controls.Tank.movement;
 		turret = controls.Tank.turret;
@@ -74,7 +71,8 @@ public class tankMain : MonoBehaviour
 		TF = this.GetComponent<Transform>();
 	}
 
-	void OnDisable(){
+	void OnDisable()
+	{
 		controls.Disable();
 	}
 
@@ -87,29 +85,22 @@ public class tankMain : MonoBehaviour
 		rightTrack = TankTrackR.GetComponentsInChildren<WheelCollider>();
 		
 		GunPivot.localEulerAngles = Vector3.zero;
-		
-		armourAreas = this.GetComponentsInChildren<ArmourScript>();
+
+		part turretArmour = new part(getArmourByName("turret"));
+		turretArmour.minMaxJitter(0.1f, 0.2f);
+		turretArmour.minModifier(0.5f);
 	}
 
 	// Update is called once per frame
-	void Update(){ //this is mainly for debug variables and updating the input 
-		//updating debug variables
-		//currentTurretRotation = TurretPivot.localEulerAngles.y;
-		//currentSpeed = Vector3.Dot(transform.forward, RB.velocity);
-
-		//rTrackTorque = rightTrack[0].motorTorque;                //these debug values arent used anymore
-		//lTrackTorque = leftTrack[0].motorTorque;
-		//rBrakingTorque = rightTrack[0].brakeTorque;
-		//lBrakingTorque = leftTrack[0].brakeTorque;
-		//rWheelSpeed = rightTrack[0].rotationSpeed;
-		//lWheelSpeed = leftTrack[0].rotationSpeed;
-
+	void Update()
+	{ 
 		//getting inputs
 		turretVecIn = turret.ReadValue<Vector2>();
 		movementVecIn = movement.ReadValue<Vector2>();
 	}
 
-	void FixedUpdate(){
+	void FixedUpdate()
+	{
 		trackMovement(rightTrack, leftTrack, movementVecIn.x, movementVecIn.y);  //this is all dealt within a seperate function. Doing this won't make it more effcient but it will make the code a lot more readable as whole.
 	}
 
@@ -261,12 +252,48 @@ public class tankMain : MonoBehaviour
 		
 		return null;
 	}
-
-	//private Vector2 InputSmoothing(Vector2 input)
-	//{
-	//	get the input
-	//	return null;
-	//}
 }
 
- 
+public class part
+{
+	ArmourScript armour;
+	private float minimumMod;
+	private float maxJitter;
+	private float minJitter;
+	private float initialHealth;
+
+	public part(ArmourScript ImpArmour)
+	{
+		armour = ImpArmour;
+		initialHealth = armour.getHealth();
+	}
+	
+	public void getModifier()
+	{
+		float modifier = armour.getHealth() / initialHealth;
+		modifier =+ Random.Range(minJitter, maxJitter);
+	}
+
+	public void minModifier(float minimum)
+	{
+		if (minimum > 1)
+		{
+			return;
+		}
+
+		minimumMod = minimum;
+	}
+
+	public void minMaxJitter(float minimum, float maximum)
+	{
+		minJitter = minimum;
+		maxJitter = maximum;
+	}
+
+	public float getHealthPercentage()
+	{
+		return armour.getHealth() / initialHealth;
+	}
+}
+
+
