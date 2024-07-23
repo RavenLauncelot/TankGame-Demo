@@ -4,6 +4,7 @@ using System.IO;
 using System.Security.Cryptography;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Animations;
 
 public class gunController : MonoBehaviour
 {
@@ -44,11 +45,13 @@ public class gunController : MonoBehaviour
 		Quaternion turretAngleY = getTargetDirection("y");
 		Quaternion turretAngleX = getTargetDirection("x");
 		
+		Debug.Log("Rotation angles Y: " + turretAngleY.eulerAngles + " X: " +  turretAngleX.eulerAngles);
+
 		//this for the spinning there are no limits so this is very straight forward
-		gunPivotY.rotation = Quaternion.RotateTowards(gunPivotY.rotation, turretAngleY, turretYawSpeed * Time.deltaTime);   //because ive split the axis into seperate gameobjects in the editor i dont need need to single out the axis i want to move 
+		gunPivotY.localRotation = Quaternion.RotateTowards(gunPivotY.localRotation, turretAngleY, turretYawSpeed * Time.deltaTime);   //because ive split the axis into seperate gameobjects in the editor i dont need need to single out the axis i want to move 
 
 		//because thee x axis has to move within limit I had to change the code to clamp it if it moves out of bounds
-		Vector3 pitchAmount = new Vector3(pitchDirection(gunPivotX.rotation, turretAngleX)*turretPitchSpeed*Time.deltaTime, 0, 0);
+		Vector3 pitchAmount = new Vector3(pitchDirection(gunPivotX.localRotation, turretAngleX)*turretPitchSpeed*Time.deltaTime, 0, 0);
 		pitchAmount.x = Mathf.Clamp(pitchAmount.x, minPitch - currentGunPitch, maxPitch - currentGunPitch);
 		
 		float difference = Mathf.Clamp(currentCamPitch, minPitch, maxPitch) - currentGunPitch;
@@ -65,6 +68,9 @@ public class gunController : MonoBehaviour
 		gunPivotX.Rotate(pitchAmount);
 		
 		currentGunPitch += pitchAmount.x;
+
+		Debug.DrawRay(gunPivotX.position, gunPivotX.forward * 100, Color.red);
+		Debug.DrawRay(gunPivotY.position, gunPivotY.forward * 100, Color.green);
 	}
 	
 	public Quaternion getTargetDirection(string axis)    //this finds the global rotation of the vector from the tank gun to the postion the camera is looking at.
@@ -78,17 +84,23 @@ public class gunController : MonoBehaviour
 		{
 			direction.x = targetPos.x - gunPivotY.position.x;   //getting the relevant positions coordinates for the axis 
 			direction.z = targetPos.z - gunPivotY.position.z;
+			direction.y = 0;
+
+			//Debug.Log("Y axis target vector: " + direction);
 			rotationDifference = Quaternion.LookRotation(direction, Vector3.up);   //this finds the rotation of the vector from the gun to the target the cameras looking at
 			return rotationDifference;
 		}
 		else if (axis == "x")
-		{
-			Debug.DrawRay(gunPivotX.position, targetPos - gunPivotX.position, Color.blue);
-			
-			direction.y = targetPos.y - gunPivotX.position.y;  
-			direction.x = targetPos.x - gunPivotX.position.x;
-			direction.z = targetPos.z - gunPivotX.position.z;
-			
+		{		
+			//since this is angle of the X axis i cant just get the y positon otherwise it would just point vertical
+			//I also need it so that the direction is straight ahead of the gun so it rotates on the correct axis this mean i need to find the lenght of the hypotenuse of the x and z values and then point it forward ahead of the gun to get the correct rotation
+			float distanceToTarget = Mathf.Sqrt(Mathf.Pow(targetPos.x - gunPivotX.position.x, 2) + Mathf.Pow(targetPos.z - gunPivotX.position.z, 2));       //using a^2 + b^2 = c^2  - once ive found the distance to the target im going to point it in the same direction as the gun
+			direction.z = distanceToTarget;
+			direction.y = targetPos.y - gunPivotX.position.y;
+			direction.x = 0;
+
+			//Debug.Log("X axis target vector: " + direction);
+
 			rotationDifference = Quaternion.LookRotation(direction ,Vector3.up);
 			return rotationDifference;
 		}

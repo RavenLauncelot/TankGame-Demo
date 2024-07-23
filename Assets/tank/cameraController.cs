@@ -1,6 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.Experimental.AI;
 using UnityEngine.InputSystem;
@@ -138,7 +136,6 @@ public class cameraController : MonoBehaviour
 		//this will shoot a ray backward where the camera is. if its hits a object it will move the camera to where it has hit so it doesnt phase through objects 
 		RaycastHit hit;
 		Ray ray = new Ray(pivotX.position, -pivotX.forward);
-		Debug.DrawRay(pivotX.position, pivotX.forward * maxDistance, Color.red);  //the ray comes from pivotX as that is the final axis of movement - maxdistance is already negative so im using a forward vector. max distance is the distance from the cameras pivot
 			
 		if (Physics.Raycast(ray, out hit, -maxDistance))  //if the camera is going to phase through an object
 		{
