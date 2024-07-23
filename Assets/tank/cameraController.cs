@@ -155,12 +155,10 @@ public class cameraController : MonoBehaviour
 		
 		if (Physics.Raycast(ray, out hit, Mathf.Infinity))
 		{
-			Debug.Log("hit target: " + hit.point);
 			return hit.point;		
 		}
 		else
 		{
-			Debug.Log("Target not hit");
 			return ray.GetPoint(2000);
 		}
 	}

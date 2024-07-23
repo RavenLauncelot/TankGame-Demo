@@ -44,8 +44,6 @@ public class gunController : MonoBehaviour
 		
 		Quaternion turretAngleY = getTargetDirection("y");
 		Quaternion turretAngleX = getTargetDirection("x");
-		
-		Debug.Log("Rotation angles Y: " + turretAngleY.eulerAngles + " X: " +  turretAngleX.eulerAngles);
 
 		//this for the spinning there are no limits so this is very straight forward
 		gunPivotY.localRotation = Quaternion.RotateTowards(gunPivotY.localRotation, turretAngleY, turretYawSpeed * Time.deltaTime);   //because ive split the axis into seperate gameobjects in the editor i dont need need to single out the axis i want to move 
