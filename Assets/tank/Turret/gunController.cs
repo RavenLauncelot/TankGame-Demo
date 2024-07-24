@@ -10,21 +10,22 @@ using UnityEngine.TextCore.LowLevel;
 public class gunController : MonoBehaviour
 {
 
-    [SerializeField] private float turretYawSpeed;
-    [SerializeField] private float turretPitchSpeed;
+	[SerializeField] private float turretYawSpeed;
+	[SerializeField] private float turretPitchSpeed;
 
-    [SerializeField] private float minPitch;
-    [SerializeField] private float maxPitch;
+	[SerializeField] private float minPitch;
+	[SerializeField] private float maxPitch;
 
 
-    [SerializeField] private float currentGunPitch;
+	[SerializeField] private float currentGunPitch;
 
-    [SerializeField] private float currentCamPitch;
+	[SerializeField] private float currentCamPitch;
 
 	float previousCameraPitch;
 
 	public Transform camPivotY;
 	public Transform camPivotX;
+	public Transform turretPosReference;
 
 	public Transform gunPivotX;
 	Transform gunPivotY;
@@ -42,35 +43,45 @@ public class gunController : MonoBehaviour
 
 	private void FixedUpdate()  //well be doing it in fixed update since this object is connected to a rigidbody
 	{
-		currentCamPitch = camController.getCamXAngle();
-		
-		Quaternion turretAngleY = getTargetDirection("y");
-		Quaternion turretAngleX = getTargetDirection("x");
-
-		//this for the spinning there are no limits so this is very straight forward
-		gunPivotY.localRotation = Quaternion.RotateTowards(gunPivotY.localRotation, turretAngleY, turretYawSpeed * Time.deltaTime);   //because ive split the axis into seperate gameobjects in the editor i dont need need to single out the axis i want to move 
-
-		//because thee x axis has to move within limit I had to change the code to clamp it if it moves out of bounds
-		Vector3 pitchAmount = new Vector3(pitchDirection(gunPivotX.localRotation, turretAngleX)*turretPitchSpeed*Time.deltaTime, 0, 0);
-		pitchAmount.x = Mathf.Clamp(pitchAmount.x, minPitch - currentGunPitch, maxPitch - currentGunPitch);
-		
-		float difference = Mathf.Clamp(currentCamPitch, minPitch, maxPitch) - currentGunPitch;
-		
-		if (Mathf.Abs(pitchAmount.x) > Mathf.Abs(difference))   //if the pitchamount will overshoot the angle the camera is facing it will directly set it to its rotaion by the amount required
+		if (camController.isThirdPerson())
 		{
-			pitchAmount.x = difference;  //i need to set this to pitchamoutn otherwise it will lose track of its position when its added to currentGunPitch it also means less if statements 
+			currentCamPitch = camController.getCamXAngle();
+			
+			Quaternion turretAngleY = getTargetDirection("y");
+			Quaternion turretAngleX = getTargetDirection("x");
+
+			//this for the spinning there are no limits so this is very straight forward - I did want to set the global rotation as that would be a lot easier to implement but this caused multiple issues when the tank tilted
+			gunPivotY.localRotation = Quaternion.RotateTowards(gunPivotY.localRotation, turretAngleY, turretYawSpeed * Time.deltaTime);   //because ive split the axis into seperate gameobjects in the editor i dont need need to single out the axis i want to move 
+
+			//because thee x axis has to move within limit I had to change the code to clamp it if it moves out of bounds
+			Vector3 pitchAmount = new Vector3(pitchDirection(gunPivotX.localRotation, turretAngleX)*turretPitchSpeed*Time.deltaTime, 0, 0);
+			pitchAmount.x = Mathf.Clamp(pitchAmount.x, minPitch - currentGunPitch, maxPitch - currentGunPitch);
+			
+			float difference = Mathf.Clamp(turretAngleX.eulerAngles.x, minPitch, maxPitch) - currentGunPitch;
+			
+			Debug.Log(pitchAmount.x + "   " + difference);
+			
+			if (Mathf.Abs(pitchAmount.x) > Mathf.Abs(difference))   //if the pitchamount will overshoot the angle the camera is facing it will directly set it to its rotaion by the amount required
+			{
+				pitchAmount.x = difference;  //i need to set this to pitchamoutn otherwise it will lose track of its position when its added to currentGunPitch it also means less if statements 
+			}
+			else
+			{
+				difference = 999;
+			}
+
+			gunPivotX.Rotate(pitchAmount);
+			
+			currentGunPitch += pitchAmount.x;
+
+			Debug.DrawRay(gunPivotX.position, gunPivotX.forward * 100, Color.red);
+			Debug.DrawRay(gunPivotY.position, gunPivotY.forward * 100, Color.green);
 		}
+		
 		else
 		{
-			difference = 999;
+			//gun is controlled directly by the controller
 		}
-
-		gunPivotX.Rotate(pitchAmount);
-		
-		currentGunPitch += pitchAmount.x;
-
-		Debug.DrawRay(gunPivotX.position, gunPivotX.forward * 100, Color.red);
-		Debug.DrawRay(gunPivotY.position, gunPivotY.forward * 100, Color.green);
 	}
 	
 	public Quaternion getTargetDirection(string axis)    //this finds the global rotation of the vector from the tank gun to the postion the camera is looking at.
@@ -80,10 +91,13 @@ public class gunController : MonoBehaviour
 		
 		Vector3 targetPos = camController.getTarget();
 		
+		Debug.Log("direction vector Y: " + (targetPos - gunPivotY.position) + "Direction vector X: " + (targetPos - gunPivotX.position) + "Target localposition: " + turretPosReference.InverseTransformPoint(targetPos));
+		
 		if (axis == "y")   //these are the axis specifcally for the gun 
 		{
-			direction.x = targetPos.x - gunPivotY.position.x;   //getting the relevant positions coordinates for the axis 
-			direction.z = targetPos.z - gunPivotY.position.z;
+			direction = turretPosReference.InverseTransformPoint(targetPos);   //for this one I had to convert it to the local position to another gameobject in the same position as the turret rotates and the local positions change
+			//direction.x = targetPos.x - gunPivotY.position.x;   //getting the relevant positions coordinates for the axis 
+			//direction.z = targetPos.z - gunPivotY.position.z;
 			direction.y = 0;
 
 			//Debug.Log("Y axis target vector: " + direction);
@@ -152,11 +166,11 @@ public class gunController : MonoBehaviour
 
 	public void adjustTurretPitch(float modifier)
 	{
-        if (modifier < 0f || modifier > 1f)  //this checks if the input is invalid or not 
-        {
-            return;  //if its invalid it breaks
-        }
+		if (modifier < 0f || modifier > 1f)  //this checks if the input is invalid or not 
+		{
+			return;  //if its invalid it breaks
+		}
 
 		turretPitchSpeed = turretPitchSpeed * modifier;
-    }
+	}
 }

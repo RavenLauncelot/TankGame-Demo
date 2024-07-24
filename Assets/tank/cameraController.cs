@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Experimental.AI;
 using UnityEngine.InputSystem;
@@ -9,28 +10,34 @@ public class cameraController : MonoBehaviour
 	Transform pivotY;         //this is the pivots own transform
 	public Transform pivotX;  //this is a child transform of pivotY
 	Transform cameraTF;       //this is the camera itself
-
+	GameObject crosshair;     //this is crosshair gameobject
+	
+	//inputactions these are for the controls
 	private InputAction zoomIn;
 	private InputAction turretInput;
 	private TankControls controls;
 
+	//camera objects so i can turn them off
 	[SerializeField] private GameObject scopedCameraObj;
 	[SerializeField] private GameObject normalCameraObj;
 
-	private Camera scopeCam;    //these are so i can enable and disable the cameras depending on when im using them
+	//these are the camera objects components
+	private Camera scopeCam;    
 	private Camera normalCam;
 	private AudioListener scopeCamAudio;
 	private AudioListener normalCamAudio;
 
+	//the variable used for input this is updated every fixed update
 	private Vector2 turretVec;
 
+	//these are for the camera mode its in. and campitch is used for keeping track of its pitch to stay within its limits
 	private bool thirdPerson;
 	private float currentCamPitch;
 
-	[SerializeField] private float camSpeedX;      //this is basically sensitivity 
+	[SerializeField] private float camSpeedX;      //speed of the camera
 	[SerializeField] private float camSpeedY;
-	[SerializeField] private float maxCamPitch;   //this is so the camera wont do backflips or front flips
-	[SerializeField] private float minCamPitch;
+	[SerializeField] private float maxCamPitch;   //these are the limits for the cameras rotation 
+	[SerializeField] private float minCamPitch;   //stop the camera from doing loops 
 	
 	float maxDistance;   //this is the max distance from the pivot point. this does not hold value until the game starts. its set based of its current positon in the editor
 
@@ -64,6 +71,7 @@ public class cameraController : MonoBehaviour
 		normalCam = normalCameraObj.GetComponent<Camera>();
 		scopeCamAudio = scopeCam.GetComponent<AudioListener>();
 		normalCamAudio = normalCam.GetComponent<AudioListener>();
+		crosshair = GameObject.Find("crosshair");
 
 		pivotY = this.GetComponent<Transform>();
 
@@ -90,7 +98,7 @@ public class cameraController : MonoBehaviour
 		//updating the turret input
 		turretVec = turretInput.ReadValue<Vector2>();
 
-		//check what camera mode its in 
+		//check what camera mode its in. this is change in the camZoom method which is subscribed to an input action
 		if (thirdPerson)
 		{
 			thirdPersonCamera();
@@ -107,12 +115,19 @@ public class cameraController : MonoBehaviour
 
 	private void camZoom(InputAction.CallbackContext obj)
 	{
+		//inversing the states of each camera 
 		scopeCam.enabled = !scopeCam.enabled;              //will just invert whether they are enabled or not one will be set to false when the program starts
 		scopeCamAudio.enabled = !scopeCamAudio.enabled;    //this applies aswell to the audio listener
 		normalCam.enabled = !normalCam.enabled;
 		normalCamAudio.enabled = !normalCamAudio.enabled;
 
+		//changing the third person bool
 		thirdPerson = !thirdPerson;
+		
+		//making the crosshair appear or dissapear
+		crosshair.SetActive(thirdPerson);  //will be active when third person is active
+		
+		//canvas stuff - changing the ui depending on the view
 	}
 	
 	public float getCamXAngle()
@@ -139,7 +154,7 @@ public class cameraController : MonoBehaviour
 			
 		if (Physics.Raycast(ray, out hit, -maxDistance))  //if the camera is going to phase through an object
 		{
-			cameraTF.position = hit.point;
+			cameraTF.position = hit.point;  //this sets the cameras positon to where the ray hits the ground 
 		}
 		else
 		{
@@ -161,5 +176,10 @@ public class cameraController : MonoBehaviour
 		{
 			return ray.GetPoint(2000);
 		}
+	}
+	
+	public bool isThirdPerson()
+	{
+		return thirdPerson;
 	}
 }
