@@ -57,9 +57,8 @@ public class gunController : MonoBehaviour
 			Vector3 pitchAmount = new Vector3(pitchDirection(gunPivotX.localRotation, turretAngleX)*turretPitchSpeed*Time.deltaTime, 0, 0);
 			pitchAmount.x = Mathf.Clamp(pitchAmount.x, minPitch - currentGunPitch, maxPitch - currentGunPitch);
 			
-			float difference = Mathf.Clamp(turretAngleX.eulerAngles.x, minPitch, maxPitch) - currentGunPitch;
-			
-			Debug.Log(pitchAmount.x + "   " + difference);
+			//float difference = Mathf.Clamp(turretAngleX.eulerAngles.x, minPitch, maxPitch) - currentGunPitch;   //this stopped working cus of eulerangles going negative below zero or to 360
+			float difference = Quaternion.Angle(gunPivotX.localRotation, turretAngleX);
 			
 			if (Mathf.Abs(pitchAmount.x) > Mathf.Abs(difference))   //if the pitchamount will overshoot the angle the camera is facing it will directly set it to its rotaion by the amount required
 			{
@@ -84,7 +83,7 @@ public class gunController : MonoBehaviour
 		}
 	}
 	
-	public Quaternion getTargetDirection(string axis)    //this finds the global rotation of the vector from the tank gun to the postion the camera is looking at.
+	public Quaternion getTargetDirection(string axis)    //this finds the local rotation of the vector from the tank gun to the localpostion of the ray in relation to the turretreferencepoint object.
 	{
 		Vector3 direction = new Vector3(0,0,0);
 		Quaternion rotationDifference;
@@ -96,8 +95,6 @@ public class gunController : MonoBehaviour
 		if (axis == "y")   //these are the axis specifcally for the gun 
 		{
 			direction = turretPosReference.InverseTransformPoint(targetPos);   //for this one I had to convert it to the local position to another gameobject in the same position as the turret rotates and the local positions change
-			//direction.x = targetPos.x - gunPivotY.position.x;   //getting the relevant positions coordinates for the axis 
-			//direction.z = targetPos.z - gunPivotY.position.z;
 			direction.y = 0;
 
 			//Debug.Log("Y axis target vector: " + direction);
