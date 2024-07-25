@@ -9,10 +9,10 @@ public class ArmourScript : MonoBehaviour
 	
 	
 	[SerializeField] private float health;
-    [SerializeField] private float armourThickness;
-    [SerializeField] private string partName;
+	[SerializeField] private float armourThickness;
+	[SerializeField] private string partName;
 
-	private float initialHealth;
+	[SerializeField] private float initialHealth;
 
 	Renderer rend;
 	
@@ -55,5 +55,10 @@ public class ArmourScript : MonoBehaviour
 	public float getHealth()
 	{
 		return health;
+	}
+	
+	public float getHealthPercent()
+	{
+		return health/initialHealth;
 	}
 }

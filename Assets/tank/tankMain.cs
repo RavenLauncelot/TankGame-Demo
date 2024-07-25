@@ -1,14 +1,10 @@
+using UnityEngine;
+using UnityEngine.InputSystem;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
+using Unity.PlasticSCM.Editor.WebApi;
 using Unity.VisualScripting;
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.InputSystem;
-using Unity.Properties;
-using UnityEngine.ParticleSystemJobs;
-using JetBrains.Annotations;
-using System.ComponentModel.Design;
-using System.Runtime.CompilerServices;
 
 public class tankMain : MonoBehaviour
 {
@@ -22,18 +18,21 @@ public class tankMain : MonoBehaviour
 	//setting up the individual control inputs
 	private InputAction movement;
 	private InputAction turret;
-	private InputAction fire;
 
 	//these will hold the values of the inputs during the update method alot shorter than left.readvalue<float>() so makes it a bit more readable and it will only need to get the input once everyframe rather than whenever its used.
 	private Vector2 movementVecIn;
-	private Vector2 turretVecIn;
 
 	//getting all the necesarray objects and components that make up the tank so that i can access all their properties
 	public GameObject TankTrackL ,TankTrackR;
 	public Transform TurretPivot;
 	public Transform GunPivot;
 	
-	private ArmourScript[] armourAreas;
+	[SerializeField] private ArmourScript turretArmour;
+	[SerializeField] private ArmourScript lTrackArmour;
+	[SerializeField] private ArmourScript rTrackArmour;
+	[SerializeField] private ArmourScript baseArmour;
+	
+	private float totalHealth;
 
 	private WheelCollider[] leftTrack;
 	private WheelCollider[] rightTrack;
@@ -42,16 +41,15 @@ public class tankMain : MonoBehaviour
 	Transform TF;
 
 	//variables for things like speed
-    [SerializeField] private float maxTurnSpeed = 300;
-    [SerializeField] private float maxSpeed = 500;
-    [SerializeField] private float initialTorque = 2000;
-    [SerializeField] private float brakingTorque = 1000;
-
-	//these modifie the amount of torque a track receives
-	private float rTrackModifier = 1f;
-	private float lTrackModifier = 1f;
-
-	private float currentSpeed;
+	[SerializeField] private float turnSpeed;
+	[SerializeField] private float speed;
+	[SerializeField] private float torque;
+	[SerializeField] private float brakingTorque;
+	
+	[SerializeField] private float maxTurnSpeed = 250;
+	[SerializeField] private float maxSpeed = 1000;
+	[SerializeField] private float maxTorque = 2000;
+	[SerializeField] private float maxBrakingTorque = 2000;
 
 	void Awake()
 	{
@@ -79,25 +77,46 @@ public class tankMain : MonoBehaviour
 
 	// Start is called before the first frame update
 	void Start()
-	{
+	{		
 		//setting up the wheel colliders 
 		leftTrack = TankTrackL.GetComponentsInChildren<WheelCollider>();
-		rightTrack = TankTrackR.GetComponentsInChildren<WheelCollider>();
+		rightTrack = TankTrackR.GetComponentsInChildren<WheelCollider>();	
 		
-		GunPivot.localEulerAngles = Vector3.zero;
-
-		part turretArmour = new part(getArmourByName("turret"));
-		turretArmour.minMaxJitter(0.1f, 0.2f);
-		turretArmour.minModifier(0.5f);
+		totalHealth = turretArmour.getHealth() + baseArmour.getHealth() + lTrackArmour.getHealth() + rTrackArmour.getHealth();
 	}
+	
+
 
 	// Update is called once per frame
 	void Update()
 	{ 
-		//getting inputs
-		turretVecIn = turret.ReadValue<Vector2>();
 		movementVecIn = movement.ReadValue<Vector2>();
-	}
+		
+		//updating damage things 
+		totalHealth = turretArmour.getHealth() + baseArmour.getHealth() + lTrackArmour.getHealth() + rTrackArmour.getHealth();
+		
+		//updating the modifiers
+		//turret modifiers
+		float modifier = Mathf.Clamp(turretArmour.getHealthPercent(), 0.5f, 1f);		
+		modifier = modifier - Mathf.Clamp(Random.Range(0.0f, 0.8f) * (1f - turretArmour.getHealthPercent()),0 ,1);	
+		turretMovement.modTurretPitch(modifier);
+		turretMovement.modTurretYaw(modifier);
+		Debug.Log(Random.Range(0,0.5f) * (1f - turretArmour.getHealthPercent()));
+		
+		//base modifiers
+		modifier = Mathf.Clamp(baseArmour.getHealthPercent(), 0.5f, 1f);
+		modifier = modifier - Mathf.Clamp(Random.Range(0.0f, 0.8f) * (1f - baseArmour.getHealthPercent()),0, 1);
+		setTorqueModifier(modifier);
+		setTurningModifier(modifier);
+		
+		
+		//track modifiers
+		modifier = Mathf.Clamp(lTrackArmour.getHealthPercent(), 0.5f, 1f) + Mathf.Clamp(rTrackArmour.getHealthPercent(), 0.5f, 1f);
+		modifier /= 2f;   //finds the average health between the 2
+		modifier = modifier - Mathf.Clamp(Random.Range(0.0f, 0.8f) * (1f - turretArmour.getHealthPercent()), 0f, 1f);
+		setSpeedModifier(modifier);
+		
+	}	
 
 	void FixedUpdate()
 	{
@@ -141,7 +160,7 @@ public class tankMain : MonoBehaviour
 				wheelSpeed = sprocket.rotationSpeed;
 
 				sprocket.brakeTorque = 0;
-				sprocket.motorTorque = Mathf.Lerp(invIn * initialTorque, 0, Mathf.Abs(wheelSpeed)/maxTurnSpeed);          
+				sprocket.motorTorque = Mathf.Lerp(invIn * torque, 0, Mathf.Abs(wheelSpeed)/turnSpeed);          
 			}
 
 			foreach (WheelCollider sprocket in lTrack)
@@ -149,7 +168,7 @@ public class tankMain : MonoBehaviour
 				wheelSpeed = sprocket.rotationSpeed;
 
 				sprocket.brakeTorque = 0;
-				sprocket.motorTorque = Mathf.Lerp(inputX * initialTorque, 0, Mathf.Abs(wheelSpeed)/maxTurnSpeed);
+				sprocket.motorTorque = Mathf.Lerp(inputX * torque, 0, Mathf.Abs(wheelSpeed)/turnSpeed);
 			}
 
 			//Debug.Log("Neutral steering");       
@@ -166,7 +185,7 @@ public class tankMain : MonoBehaviour
 				if (wheelSpeed * inputY >= 0) //originally i multiplied them both together and checked if they were above 0 but i believe this may be more effcient way to check if they share the same sign
 				{
 					sprocket.brakeTorque = 0;
-					sprocket.motorTorque = Mathf.Lerp(inputY * initialTorque, 0, Mathf.Abs(wheelSpeed)/maxSpeed);
+					sprocket.motorTorque = Mathf.Lerp(inputY * torque, 0, Mathf.Abs(wheelSpeed)/speed);
 				}
 
 				else //decelerating / braking
@@ -184,7 +203,7 @@ public class tankMain : MonoBehaviour
 				if (wheelSpeed * inputY >= 0) //originally i multiplied them both together and checked if they were above 0 but i believe this may be more effcient way to check if they share the same sign
 				{
 					sprocket.brakeTorque = 0;
-					sprocket.motorTorque = Mathf.Lerp(inputY * initialTorque, 0, Mathf.Abs(wheelSpeed)/maxSpeed);
+					sprocket.motorTorque = Mathf.Lerp(inputY * torque, 0, Mathf.Abs(wheelSpeed)/speed);
 				}
 
 				else
@@ -218,7 +237,7 @@ public class tankMain : MonoBehaviour
 					wheelSpeed = sprocket.rotationSpeed;
 
 					sprocket.brakeTorque = 0;
-					sprocket.motorTorque = Mathf.Lerp(initialTorque * combinedInput, 0, Mathf.Abs(wheelSpeed)/maxSpeed);
+					sprocket.motorTorque = Mathf.Lerp(torque * combinedInput, 0, Mathf.Abs(wheelSpeed)/speed);
 				}
 			}
 
@@ -229,7 +248,7 @@ public class tankMain : MonoBehaviour
 					wheelSpeed = sprocket.rotationSpeed;
 
 					sprocket.brakeTorque = 0;
-					sprocket.motorTorque = Mathf.Lerp(initialTorque * combinedInput, 0, Mathf.Abs(wheelSpeed)/maxSpeed);
+					sprocket.motorTorque = Mathf.Lerp(torque * combinedInput, 0, Mathf.Abs(wheelSpeed)/speed);
 				}
 				foreach (WheelCollider sprocket in lTrack)
 				{
@@ -240,60 +259,19 @@ public class tankMain : MonoBehaviour
 		}      
 	}
 
-	private ArmourScript getArmourByName(string name)
-	{
-		foreach (ArmourScript a in armourAreas)
-		{
-			if (a.getName() == name)
-			{
-				return a;
-			}
-		}
-		
-		return null;
+	public void setSpeedModifier(float mod)
+	{	
+		speed = maxSpeed * mod;
 	}
-}
 
-public class part
-{
-	ArmourScript armour;
-	private float minimumMod;
-	private float maxJitter;
-	private float minJitter;
-	private float initialHealth;
-
-	public part(ArmourScript ImpArmour)
+	public void setTurningModifier(float mod)
 	{
-		armour = ImpArmour;
-		initialHealth = armour.getHealth();
+		turnSpeed = maxTurnSpeed * mod;
 	}
 	
-	public void getModifier()
+	public void setTorqueModifier(float mod)
 	{
-		float modifier = armour.getHealth() / initialHealth;
-		modifier =+ Random.Range(minJitter, maxJitter);
-	}
-
-	public void minModifier(float minimum)
-	{
-		if (minimum > 1)
-		{
-			return;
-		}
-
-		minimumMod = minimum;
-	}
-
-	public void minMaxJitter(float minimum, float maximum)
-	{
-		minJitter = minimum;
-		maxJitter = maximum;
-	}
-
-	public float getHealthPercentage()
-	{
-		return armour.getHealth() / initialHealth;
+		torque = maxTorque * mod;
 	}
 }
-
 

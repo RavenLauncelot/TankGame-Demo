@@ -10,8 +10,10 @@ using UnityEngine.TextCore.LowLevel;
 public class gunController : MonoBehaviour
 {
 
-	[SerializeField] private float turretYawSpeed;
-	[SerializeField] private float turretPitchSpeed;
+	[SerializeField] private float YawSpeed;
+	[SerializeField] private float PitchSpeed;
+	[SerializeField] private float maxYawSpeed;
+	[SerializeField] private float maxPitchSpeed;
 
 	[SerializeField] private float minPitch;
 	[SerializeField] private float maxPitch;
@@ -39,6 +41,9 @@ public class gunController : MonoBehaviour
 		currentGunPitch = 0;
 		currentCamPitch = 0;
 		gunPivotX.localEulerAngles = Vector3.zero;
+		
+		YawSpeed = maxYawSpeed;
+		PitchSpeed = maxPitchSpeed;
 	}
 
 	private void FixedUpdate()  //well be doing it in fixed update since this object is connected to a rigidbody
@@ -51,10 +56,10 @@ public class gunController : MonoBehaviour
 			Quaternion turretAngleX = getTargetDirection("x");
 
 			//this for the spinning there are no limits so this is very straight forward - I did want to set the global rotation as that would be a lot easier to implement but this caused multiple issues when the tank tilted
-			gunPivotY.localRotation = Quaternion.RotateTowards(gunPivotY.localRotation, turretAngleY, turretYawSpeed * Time.deltaTime);   //because ive split the axis into seperate gameobjects in the editor i dont need need to single out the axis i want to move 
+			gunPivotY.localRotation = Quaternion.RotateTowards(gunPivotY.localRotation, turretAngleY, YawSpeed * Time.deltaTime);   //because ive split the axis into seperate gameobjects in the editor i dont need need to single out the axis i want to move 
 
 			//because thee x axis has to move within limit I had to change the code to clamp it if it moves out of bounds
-			Vector3 pitchAmount = new Vector3(pitchDirection(gunPivotX.localRotation, turretAngleX)*turretPitchSpeed*Time.deltaTime, 0, 0);
+			Vector3 pitchAmount = new Vector3(pitchDirection(gunPivotX.localRotation, turretAngleX)*PitchSpeed*Time.deltaTime, 0, 0);
 			pitchAmount.x = Mathf.Clamp(pitchAmount.x, minPitch - currentGunPitch, maxPitch - currentGunPitch);
 			
 			//float difference = Mathf.Clamp(turretAngleX.eulerAngles.x, minPitch, maxPitch) - currentGunPitch;   //this stopped working cus of eulerangles going negative below zero or to 360
@@ -64,17 +69,12 @@ public class gunController : MonoBehaviour
 			{
 				pitchAmount.x = difference;  //i need to set this to pitchamoutn otherwise it will lose track of its position when its added to currentGunPitch it also means less if statements 
 			}
-			else
-			{
-				difference = 999;
-			}
 
 			gunPivotX.Rotate(pitchAmount);
 			
-			currentGunPitch += pitchAmount.x;
+			currentGunPitch += pitchAmount.x;  //adding the amount it moved to the current gun pitch
 
 			Debug.DrawRay(gunPivotX.position, gunPivotX.forward * 100, Color.red);
-			Debug.DrawRay(gunPivotY.position, gunPivotY.forward * 100, Color.green);
 		}
 		
 		else
@@ -89,8 +89,6 @@ public class gunController : MonoBehaviour
 		Quaternion rotationDifference;
 		
 		Vector3 targetPos = camController.getTarget();
-		
-		Debug.Log("direction vector Y: " + (targetPos - gunPivotY.position) + "Direction vector X: " + (targetPos - gunPivotX.position) + "Target localposition: " + turretPosReference.InverseTransformPoint(targetPos));
 		
 		if (axis == "y")   //these are the axis specifcally for the gun 
 		{
@@ -151,23 +149,23 @@ public class gunController : MonoBehaviour
 		}
 	}
 
-	public void adjustTurretYaw(float modifier)
+	public void modTurretYaw(float modifier)
 	{
 		if (modifier < 0f || modifier > 1f)  //this checks if the input is invalid or not 
 		{
-			return;  //if its invalid it breaks
+			return;  //if its invalid it returns
 		}
 
-		turretYawSpeed = turretYawSpeed * modifier;
+		YawSpeed = maxYawSpeed * modifier;
 	}
 
-	public void adjustTurretPitch(float modifier)
+	public void modTurretPitch(float modifier)
 	{
 		if (modifier < 0f || modifier > 1f)  //this checks if the input is invalid or not 
 		{
-			return;  //if its invalid it breaks
+			return;  //if its invalid it returns
 		}
 
-		turretPitchSpeed = turretPitchSpeed * modifier;
+		PitchSpeed = maxPitchSpeed * modifier;
 	}
 }
