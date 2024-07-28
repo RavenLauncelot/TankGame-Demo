@@ -33,14 +33,14 @@ public class EnemyTurret : MonoBehaviour
 				Vector3 previousPlayerLoc = player.position;
 				
 
-				pivot.LookAt(Vector3.Lerp(previousPlayerLoc, player.position, turretSpeed * Time.deltaTime));
+				pivot.rotation = Quaternion.RotateTowards(Quaternion.look)
 					
 				previousPlayerLoc = player.position;
 					
 				RaycastHit hit;
-				if (Physics.Raycast(pivot.transform.position, Vector3.forward, out hit))
+				if (Physics.Raycast(pivot.transform.position, pivot.forward, out hit, range))
 				{
-					Debug.DrawRay(pivot.transform.position, Vector3.forward * 100, Color.red);
+					Debug.DrawRay(pivot.transform.position, pivot.forward * 100, Color.red);
 					if (hit.collider.tag == "Player")
 					{
 						Debug.Log("Firing");
