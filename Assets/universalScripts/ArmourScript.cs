@@ -12,7 +12,7 @@ public class ArmourScript : MonoBehaviour
 	[SerializeField] private float armourThickness;
 	[SerializeField] private string partName;
 
-	[SerializeField] private float initialHealth;
+	private float initialHealth;
 
 	Renderer rend;
 	
@@ -61,4 +61,9 @@ public class ArmourScript : MonoBehaviour
 	{
 		return health/initialHealth;
 	}
+
+    private void OnCollisionEnter(Collision collision)
+    {
+		Debug.Log("gameobject that hit" + collision.gameObject.name);
+    }
 }

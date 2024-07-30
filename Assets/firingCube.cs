@@ -1,91 +1,40 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
-using Unity.VisualScripting;
-using UnityEditor;
+using System.Linq;
+using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 
-public class EnemyTurret : MonoBehaviour
+public class firingCube : MonoBehaviour
 {
-    [SerializeField] private Transform pivot;
+    [SerializeField] ParticleSystem particleSys;
 
-    [SerializeField] private float range;
-    [SerializeField] private float turretSpeed;
+    [SerializeField] GameObject hitEffect;
+    [SerializeField] GameObject ricochetEffect;
+
     [SerializeField] private float penPower;
     [SerializeField] private float damage;
-	
-	Transform TF;
-    [SerializeField] private Transform player;
 
-	[SerializeField] private ParticleSystem particleSys;
-    [SerializeField] private GameObject hitEffect;
-    [SerializeField] private GameObject ricochetEffect;
-	
-	void Start()
-	{
-		TF = this.GetComponent<Transform>();
-		particleSys = this.GetComponent<ParticleSystem>();
-		
-		StartCoroutine(aimAtPlayer());
-	}
-
-    private void Update()
+    // Start is called before the first frame update
+    void Start()
     {
-        //updating health values 
+        StartCoroutine(firing());
 
     }
 
-    IEnumerator aimAtPlayer()
-	{
-		while (true)
-
-		{
-			//Debug.Log("Current distance: " + Vector3.Distance(TF.position, player.position));
-			
-			while (Vector3.Distance(TF.position, player.position) < range)   //aim at player stop once is aimed at player and aim again after set time
-			{
-				Vector3 previousPlayerLoc = player.position;
-
-
-				pivot.rotation = Quaternion.RotateTowards(pivot.rotation, Quaternion.LookRotation(player.position, TF.up), turretSpeed*Time.deltaTime);
-					
-				previousPlayerLoc = player.position;
-					
-				RaycastHit hit;
-				if (Physics.Raycast(pivot.transform.position, pivot.forward, out hit, range))
-				{
-					Debug.DrawRay(pivot.transform.position, pivot.forward * 100, Color.red);
-					if (hit.collider.tag == "Player")
-					{
-						Debug.Log("Firing");
-						Fire();
-						yield return new WaitForSeconds(5);    //once its fired at the player it will stay in the same place till the time is up
-
-					}
-				}
-					
-				
-				yield return null;	
-			}
-			
-			yield return null;
-			
-		}
-	}
-	
-	private void Fire()
-	{
-		//Debug.Log("Enemy turret fired");
-		particleSys.Play();  //fires a particle using particlesystem
-	}
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
 
     private void OnParticleCollision(GameObject other)  //this is when the particle hits something. the particle system will be set to ignore the player so it wont hit itself when its fired
     {
-        if (other.GetComponentInChildren<ArmourScript>() != null) 
+        if (other.GetComponentInChildren<ArmourScript>() != null)
         {
             giveDamage(other);
         }
     }
+
     private void giveDamage(GameObject target)
     {
         //variables about the bullet itself
@@ -143,16 +92,21 @@ public class EnemyTurret : MonoBehaviour
                 if (damageGiven > damage) { damageGiven = damage; }  //this counters having very high damage against weak armour so that shells dont go above their damage
 
                 targetArmour.giveDamage(damageGiven);
-
-                Debug.Log("Penetration, chance of hit: " + penChance);
             }
 
             else
             {
-                Debug.Log("Ricochet, chance of hit: " + penChance);
-
                 Instantiate(ricochetEffect, colEvents[i].intersection, Quaternion.LookRotation(Vector3.Reflect(colEvents[i].velocity.normalized, colEvents[i].normal)));
             }
+        }
+    }
+
+    private IEnumerator firing()   //this just fires a shell evert specified seconds 
+    {
+        while (true)
+        {
+            particleSys.Play();
+            yield return new WaitForSeconds(2f);
         }
     }
 }

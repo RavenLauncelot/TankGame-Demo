@@ -83,6 +83,11 @@ public class tankMain : MonoBehaviour
 		rightTrack = TankTrackR.GetComponentsInChildren<WheelCollider>();	
 		
 		totalHealth = turretArmour.getHealth() + baseArmour.getHealth() + lTrackArmour.getHealth() + rTrackArmour.getHealth();
+
+		brakingTorque = maxBrakingTorque;
+		turnSpeed = maxTurnSpeed;
+		torque = maxTorque;
+		speed = maxSpeed;
 	}
 	
 
@@ -101,7 +106,6 @@ public class tankMain : MonoBehaviour
 		modifier = modifier - Mathf.Clamp(Random.Range(0.0f, 0.8f) * (1f - turretArmour.getHealthPercent()),0 ,1);	
 		turretMovement.modTurretPitch(modifier);
 		turretMovement.modTurretYaw(modifier);
-		Debug.Log(Random.Range(0,0.5f) * (1f - turretArmour.getHealthPercent()));
 		
 		//base modifiers
 		modifier = Mathf.Clamp(baseArmour.getHealthPercent(), 0.5f, 1f);
