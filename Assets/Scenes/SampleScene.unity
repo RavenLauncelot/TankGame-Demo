@@ -904,7 +904,7 @@ Transform:
   m_GameObject: {fileID: 99741629}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 132.93, y: -35.6, z: 78.66}
+  m_LocalPosition: {x: 132.93, y: -35.6, z: 97.6}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1100,7 +1100,7 @@ GameObject:
   - component: {fileID: 106668519}
   m_Layer: 6
   m_Name: playerTank
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1114,7 +1114,7 @@ Transform:
   m_GameObject: {fileID: 106668516}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.3689049, z: -0, w: 0.92946714}
-  m_LocalPosition: {x: -110.77, y: 4.29, z: 47.38}
+  m_LocalPosition: {x: -234.49, y: 4.29, z: 80.77}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1148,7 +1148,7 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 0
+  m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
@@ -4022,7 +4022,7 @@ Transform:
   m_GameObject: {fileID: 760558298}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 121.76001, y: -35.6, z: 78.66}
+  m_LocalPosition: {x: 121.76001, y: -35.6, z: 97.6}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -11676,6 +11676,7 @@ GameObject:
   - component: {fileID: 1186242235}
   - component: {fileID: 1186242238}
   - component: {fileID: 1186242237}
+  - component: {fileID: 1186242239}
   - component: {fileID: 1186242236}
   m_Layer: 0
   m_Name: Turret
@@ -11770,6 +11771,21 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1186242234}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1186242239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1186242234}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cda98b9349ea2e46b63694a589c1c7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 500
+  armourThickness: 300
+  partName: gun
 --- !u!1 &1194903105
 GameObject:
   m_ObjectHideFlags: 0
@@ -18217,7 +18233,7 @@ Transform:
   m_GameObject: {fileID: 1617481497}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 144, y: -35.6, z: 78.66}
+  m_LocalPosition: {x: 144, y: -35.6, z: 97.6}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -18533,7 +18549,7 @@ Transform:
   m_GameObject: {fileID: 1689144792}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 110.8, y: -23.52, z: 78.66}
+  m_LocalPosition: {x: 110.8, y: -23.52, z: 97.6}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -18881,7 +18897,7 @@ Transform:
   m_GameObject: {fileID: 1812721503}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -235.7, y: 1.92, z: 90.9}
+  m_LocalPosition: {x: -222.47, y: 1.92, z: 115.22}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -18903,11 +18919,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pivot: {fileID: 1979117605}
   range: 200
-  turretSpeed: 100
+  turretSpeed: 20
   penPower: 300
   damage: 200
   player: {fileID: 106668517}
-  particleSys: {fileID: 1360959830}
   hitEffect: {fileID: 1970076721216047394, guid: e8e8801d2372a294ca9b9c00c243c3e9, type: 3}
   ricochetEffect: {fileID: 1559949374511956768, guid: 5f893252d8eb8f848804638047fe59d3, type: 3}
 --- !u!1 &1818011508
@@ -35500,6 +35515,7 @@ GameObject:
   - component: {fileID: 2019612306}
   - component: {fileID: 2019612309}
   - component: {fileID: 2019612308}
+  - component: {fileID: 2019612310}
   - component: {fileID: 2019612307}
   m_Layer: 0
   m_Name: Cylinder
@@ -35596,6 +35612,21 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2019612305}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &2019612310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2019612305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cda98b9349ea2e46b63694a589c1c7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 800
+  armourThickness: 300
+  partName: body
 --- !u!1 &2022409307
 GameObject:
   m_ObjectHideFlags: 0
@@ -41431,7 +41462,7 @@ GameObject:
   - component: {fileID: 8426097739993179773}
   m_Layer: 6
   m_Name: rTrack
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -41493,7 +41524,7 @@ GameObject:
   - component: {fileID: 7767459238719104587}
   m_Layer: 6
   m_Name: lTrack
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -41648,7 +41679,7 @@ GameObject:
   - component: {fileID: 5917052804419881594}
   m_Layer: 6
   m_Name: turret
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -41713,7 +41744,7 @@ GameObject:
   - component: {fileID: 6523691306154281409}
   m_Layer: 6
   m_Name: base
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

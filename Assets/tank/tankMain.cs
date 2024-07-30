@@ -33,6 +33,7 @@ public class tankMain : MonoBehaviour
 	[SerializeField] private ArmourScript baseArmour;
 	
 	private float totalHealth;
+	private float initialHealth;
 
 	private WheelCollider[] leftTrack;
 	private WheelCollider[] rightTrack;
@@ -120,6 +121,11 @@ public class tankMain : MonoBehaviour
 		modifier = modifier - Mathf.Clamp(Random.Range(0.0f, 0.8f) * (1f - turretArmour.getHealthPercent()), 0f, 1f);
 		setSpeedModifier(modifier);
 		
+		if (totalHealth < initialHealth/4f)
+		{
+			//health too low
+			GameObject.Destroy(this);
+		}
 	}	
 
 	void FixedUpdate()
