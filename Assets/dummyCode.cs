@@ -24,12 +24,12 @@ public class dummyCode : MonoBehaviour
 	{
 		if (tankBase.getHealth() == 0)   //base of tank is destroyed 
 		{
-			GameObject.Destroy(this);
+			Destroy(this.gameObject);
 		}
 		
 		else if (health/initialHealth < 0.1)  //if overall health is less than 10% tank gets destroyed
 		{
-			GameObject.Destroy(this);
+			Destroy(this.gameObject);
 		}
 	}
 }

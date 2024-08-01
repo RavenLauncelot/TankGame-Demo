@@ -28,6 +28,7 @@ public class gunController : MonoBehaviour
 	public Transform camPivotY;
 	public Transform camPivotX;
 	public Transform turretPosReference;
+	public Transform gunPosReference;
 
 	public Transform gunPivotX;
 	Transform gunPivotY;
@@ -103,9 +104,9 @@ public class gunController : MonoBehaviour
 		{		
 			//since this is angle of the X axis i cant just get the y positon otherwise it would just point vertical
 			//I also need it so that the direction is straight ahead of the gun so it rotates on the correct axis this mean i need to find the lenght of the hypotenuse of the x and z values and then point it forward ahead of the gun to get the correct rotation
-			float distanceToTarget = Mathf.Sqrt(Mathf.Pow(targetPos.x - gunPivotX.position.x, 2) + Mathf.Pow(targetPos.z - gunPivotX.position.z, 2));       //using a^2 + b^2 = c^2  - once ive found the distance to the target im going to point it in the same direction as the gun
+			float distanceToTarget = Mathf.Sqrt(Mathf.Pow(gunPosReference.InverseTransformPoint(targetPos).x, 2) + Mathf.Pow(gunPosReference.InverseTransformPoint(targetPos).z, 2));       //using a^2 + b^2 = c^2  - once ive found the distance to the target im going to point it in the same direction as the gun
 			direction.z = distanceToTarget;
-			direction.y = targetPos.y - gunPivotX.position.y;
+			direction.y = gunPosReference.InverseTransformPoint(targetPos).y;
 			direction.x = 0;
 
 			//Debug.Log("X axis target vector: " + direction);

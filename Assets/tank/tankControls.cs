@@ -62,6 +62,15 @@ public partial class @TankControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""changeShell"",
+                    ""type"": ""Button"",
+                    ""id"": ""af61d41f-7cb6-43ec-a95a-93b7abf9632b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -196,6 +205,28 @@ public partial class @TankControls: IInputActionCollection2, IDisposable
                     ""action"": ""zoomin"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ddb1775d-e085-4597-87a9-3ad0949a1aa3"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""changeShell"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""19fa2222-87f7-47f6-b3fe-98e3fa645c1a"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""changeShell"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -208,6 +239,7 @@ public partial class @TankControls: IInputActionCollection2, IDisposable
         m_Tank_fire = m_Tank.FindAction("fire", throwIfNotFound: true);
         m_Tank_movement = m_Tank.FindAction("movement", throwIfNotFound: true);
         m_Tank_zoomin = m_Tank.FindAction("zoomin", throwIfNotFound: true);
+        m_Tank_changeShell = m_Tank.FindAction("changeShell", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -273,6 +305,7 @@ public partial class @TankControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Tank_fire;
     private readonly InputAction m_Tank_movement;
     private readonly InputAction m_Tank_zoomin;
+    private readonly InputAction m_Tank_changeShell;
     public struct TankActions
     {
         private @TankControls m_Wrapper;
@@ -281,6 +314,7 @@ public partial class @TankControls: IInputActionCollection2, IDisposable
         public InputAction @fire => m_Wrapper.m_Tank_fire;
         public InputAction @movement => m_Wrapper.m_Tank_movement;
         public InputAction @zoomin => m_Wrapper.m_Tank_zoomin;
+        public InputAction @changeShell => m_Wrapper.m_Tank_changeShell;
         public InputActionMap Get() { return m_Wrapper.m_Tank; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -302,6 +336,9 @@ public partial class @TankControls: IInputActionCollection2, IDisposable
             @zoomin.started += instance.OnZoomin;
             @zoomin.performed += instance.OnZoomin;
             @zoomin.canceled += instance.OnZoomin;
+            @changeShell.started += instance.OnChangeShell;
+            @changeShell.performed += instance.OnChangeShell;
+            @changeShell.canceled += instance.OnChangeShell;
         }
 
         private void UnregisterCallbacks(ITankActions instance)
@@ -318,6 +355,9 @@ public partial class @TankControls: IInputActionCollection2, IDisposable
             @zoomin.started -= instance.OnZoomin;
             @zoomin.performed -= instance.OnZoomin;
             @zoomin.canceled -= instance.OnZoomin;
+            @changeShell.started -= instance.OnChangeShell;
+            @changeShell.performed -= instance.OnChangeShell;
+            @changeShell.canceled -= instance.OnChangeShell;
         }
 
         public void RemoveCallbacks(ITankActions instance)
@@ -341,5 +381,6 @@ public partial class @TankControls: IInputActionCollection2, IDisposable
         void OnFire(InputAction.CallbackContext context);
         void OnMovement(InputAction.CallbackContext context);
         void OnZoomin(InputAction.CallbackContext context);
+        void OnChangeShell(InputAction.CallbackContext context);
     }
 }

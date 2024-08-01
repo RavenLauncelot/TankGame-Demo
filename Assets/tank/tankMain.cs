@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -9,11 +10,11 @@ using Unity.VisualScripting;
 public class tankMain : MonoBehaviour
 {
 
-	public TankControls controls;  //geting the script generated from the unity input system
+	[SerializeField] private TankControls controls;  //geting the script generated from the unity input system
 
 	//I need these to adjust the values for when a part gets damaged
-	public gunController turretMovement;
-	public fireScript fireScript;
+	[SerializeField] private gunController turretMovement;
+	[SerializeField] private fireScript fireScript;
 
 	//setting up the individual control inputs
 	private InputAction movement;
@@ -23,9 +24,9 @@ public class tankMain : MonoBehaviour
 	private Vector2 movementVecIn;
 
 	//getting all the necesarray objects and components that make up the tank so that i can access all their properties
-	public GameObject TankTrackL ,TankTrackR;
-	public Transform TurretPivot;
-	public Transform GunPivot;
+	[SerializeField] private GameObject TankTrackL ,TankTrackR;
+	[SerializeField] private Transform TurretPivot;
+	[SerializeField] private Transform GunPivot;
 	
 	[SerializeField] private ArmourScript turretArmour;
 	[SerializeField] private ArmourScript lTrackArmour;
@@ -51,6 +52,9 @@ public class tankMain : MonoBehaviour
 	[SerializeField] private float maxSpeed = 1000;
 	[SerializeField] private float maxTorque = 2000;
 	[SerializeField] private float maxBrakingTorque = 2000;
+	
+	//UI 
+	[SerializeField]private Text healthUI;
 
 	void Awake()
 	{
@@ -124,8 +128,10 @@ public class tankMain : MonoBehaviour
 		if (totalHealth < initialHealth/4f)
 		{
 			//health too low
-			GameObject.Destroy(this);
+			Destroy(this.gameObject);
 		}
+		
+		healthUI.text = "Healh: " + totalHealth;  //setting the health
 	}	
 
 	void FixedUpdate()
@@ -137,7 +143,7 @@ public class tankMain : MonoBehaviour
 	private void trackMovement(WheelCollider[] rTrack, WheelCollider[] lTrack, float inputX, float inputY)
 	{
 		float wheelSpeed;
-		if (inputX == 0 && inputY == 0)
+		if (inputX == 0 && inputY == 0)   //when input is zero it will slowly come to a stop and hold its brakes
 		{
 			foreach (WheelCollider sprocket in rTrack)
 			{
@@ -230,7 +236,6 @@ public class tankMain : MonoBehaviour
 		//this will be pivot steering one track will be locked while the other will drive the tank
 		else
 		{
-
 			float combinedInput = Mathf.Abs(inputX + inputY);
 			combinedInput /= 2;
 
