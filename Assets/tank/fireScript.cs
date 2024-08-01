@@ -121,7 +121,7 @@ public class fireScript : MonoBehaviour
 			break;
 		}
 		
-		shellTypeUI.text = "Shell Type: " + type;
+		shellTypeUI.text = "Shell type: " + type;
 		
 	}
 
