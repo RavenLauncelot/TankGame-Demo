@@ -1,11 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Security.Cryptography;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Animations;
-using UnityEngine.TextCore.LowLevel;
+
 
 public class gunController : MonoBehaviour
 {
@@ -43,48 +37,43 @@ public class gunController : MonoBehaviour
 		currentCamPitch = 0;
 		gunPivotX.localEulerAngles = Vector3.zero;
 		
+		//the yaw and pitch get changed depending on damage to modules. So i need to store the max to get the new pitch and yaw speed
 		YawSpeed = maxYawSpeed;
 		PitchSpeed = maxPitchSpeed;
 	}
 
 	private void FixedUpdate()  //well be doing it in fixed update since this object is connected to a rigidbody
 	{
-		if (camController.isThirdPerson())
+		currentCamPitch = camController.getCamXAngle();
+			
+		Quaternion turretAngleY = getTargetDirection("y");
+		Quaternion turretAngleX = getTargetDirection("x");
+
+		//this for the spinning there are no limits so this is very straight forward - I did want to set the global rotation as that would be a lot easier to implement but this caused multiple issues when the tank tilted
+		gunPivotY.localRotation = Quaternion.RotateTowards(gunPivotY.localRotation, turretAngleY, YawSpeed * Time.deltaTime);   //because ive split the axis into seperate gameobjects in the editor i dont need need to single out the axis i want to move 
+
+		//because thee x axis has to move within limit I had to change the code to clamp it if it moves out of bounds
+		Vector3 pitchAmount = new Vector3(pitchDirection(gunPivotX.localRotation, turretAngleX)*PitchSpeed*Time.deltaTime, 0, 0);
+		pitchAmount.x = Mathf.Clamp(pitchAmount.x, minPitch - currentGunPitch, maxPitch - currentGunPitch);
+			
+		//float difference = Mathf.Clamp(turretAngleX.eulerAngles.x, minPitch, maxPitch) - currentGunPitch;   //this stopped working cus of eulerangles going negative below zero or to 360
+		float difference = Quaternion.Angle(gunPivotX.localRotation, turretAngleX);
+			
+		if (Mathf.Abs(pitchAmount.x) > Mathf.Abs(difference))   //if the pitchamount will overshoot the angle the camera is facing it will directly set it to its rotaion by the amount required
 		{
-			currentCamPitch = camController.getCamXAngle();
-			
-			Quaternion turretAngleY = getTargetDirection("y");
-			Quaternion turretAngleX = getTargetDirection("x");
-
-			//this for the spinning there are no limits so this is very straight forward - I did want to set the global rotation as that would be a lot easier to implement but this caused multiple issues when the tank tilted
-			gunPivotY.localRotation = Quaternion.RotateTowards(gunPivotY.localRotation, turretAngleY, YawSpeed * Time.deltaTime);   //because ive split the axis into seperate gameobjects in the editor i dont need need to single out the axis i want to move 
-
-			//because thee x axis has to move within limit I had to change the code to clamp it if it moves out of bounds
-			Vector3 pitchAmount = new Vector3(pitchDirection(gunPivotX.localRotation, turretAngleX)*PitchSpeed*Time.deltaTime, 0, 0);
-			pitchAmount.x = Mathf.Clamp(pitchAmount.x, minPitch - currentGunPitch, maxPitch - currentGunPitch);
-			
-			//float difference = Mathf.Clamp(turretAngleX.eulerAngles.x, minPitch, maxPitch) - currentGunPitch;   //this stopped working cus of eulerangles going negative below zero or to 360
-			float difference = Quaternion.Angle(gunPivotX.localRotation, turretAngleX);
-			
-			if (Mathf.Abs(pitchAmount.x) > Mathf.Abs(difference))   //if the pitchamount will overshoot the angle the camera is facing it will directly set it to its rotaion by the amount required
-			{
-				pitchAmount.x = difference;  //i need to set this to pitchamoutn otherwise it will lose track of its position when its added to currentGunPitch it also means less if statements 
-			}
-
-			gunPivotX.Rotate(pitchAmount);
-			
-			currentGunPitch += pitchAmount.x;  //adding the amount it moved to the current gun pitch
-
-			Debug.DrawRay(gunPivotX.position, gunPivotX.forward * 100, Color.red);
+			pitchAmount.x = difference;  //i need to set this to pitchamoutn otherwise it will lose track of its position when its added to currentGunPitch it also means less if statements 
 		}
-		
-		else
-		{
-			//gun is controlled directly by the controller
-		}
+
+		gunPivotX.Rotate(pitchAmount);
+			
+		currentGunPitch += pitchAmount.x;  //adding the amount it moved to the current gun pitch
+
+		Debug.DrawRay(gunPivotX.position, gunPivotX.forward * 100, Color.red);
 	}
 	
-	public Quaternion getTargetDirection(string axis)    //this finds the local rotation of the vector from the tank gun to the localpostion of the ray in relation to the turretreferencepoint object.
+	//this finds the local rotation of the vector from the tank gun to the localpostion of the ray in relation to the turretReferencePoint and gunReferencePoint
+	//for th turret and gun respectively
+	public Quaternion getTargetDirection(string axis)    
 	{
 		Vector3 direction = new Vector3(0,0,0);
 		Quaternion rotationDifference;
@@ -103,7 +92,7 @@ public class gunController : MonoBehaviour
 		else if (axis == "x")
 		{		
 			//since this is angle of the X axis i cant just get the y positon otherwise it would just point vertical
-			//I also need it so that the direction is straight ahead of the gun so it rotates on the correct axis this mean i need to find the lenght of the hypotenuse of the x and z values and then point it forward ahead of the gun to get the correct rotation
+			//I also need it so that the direction is straight ahead of the gun so it rotates on the correct axis this means i need to find the lenght of the hypotenuse of the x and z values and then point it forward ahead of the gun to get the correct rotation
 			float distanceToTarget = Mathf.Sqrt(Mathf.Pow(gunPosReference.InverseTransformPoint(targetPos).x, 2) + Mathf.Pow(gunPosReference.InverseTransformPoint(targetPos).z, 2));       //using a^2 + b^2 = c^2  - once ive found the distance to the target im going to point it in the same direction as the gun
 			direction.z = distanceToTarget;
 			direction.y = gunPosReference.InverseTransformPoint(targetPos).y;
@@ -168,5 +157,10 @@ public class gunController : MonoBehaviour
 		}
 
 		PitchSpeed = maxPitchSpeed * modifier;
+	}
+	
+	public Vector2 getTurretSpeed()
+	{
+		return new Vector2(PitchSpeed, YawSpeed);
 	}
 }

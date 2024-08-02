@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -61,6 +60,9 @@ public class fireScript : MonoBehaviour
 		mainRB = this.GetComponentInParent<Rigidbody>();
 		TF = this.GetComponent<Transform>();
 		turretTF = GameObject.Find("gunPivot").GetComponent<Transform>();
+		
+		damage = 300f;
+		penPower = 300f;
 	}
 	
 	void shoot(InputAction.CallbackContext obj)   //fire tank shell
@@ -202,13 +204,13 @@ public class fireScript : MonoBehaviour
 
 		if (Physics.Raycast(ray, out hit, Mathf.Infinity))
 		{
-			Debug.Log("Target: " + hit.point);
+			//Debug.Log("Target: " + hit.point);
 			return hit.point;	
 		}
 
 		else
 		{
-			Debug.Log("Not Hitting");
+			//Debug.Log("Not Hitting");
 			return ray.GetPoint(2000);
 		}
 	}

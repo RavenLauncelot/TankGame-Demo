@@ -1,11 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
-using Unity.PlasticSCM.Editor.WebApi;
-using Unity.VisualScripting;
 
 public class tankMain : MonoBehaviour
 {

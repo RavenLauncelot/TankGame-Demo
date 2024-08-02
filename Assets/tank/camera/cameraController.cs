@@ -1,9 +1,5 @@
-using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Experimental.AI;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering;
 
 public class cameraController : MonoBehaviour
 {
@@ -40,6 +36,9 @@ public class cameraController : MonoBehaviour
 	[SerializeField] private float minCamPitch;   //stop the camera from doing loops 
 	
 	float maxDistance;   //this is the max distance from the pivot point. this does not hold value until the game starts. its set based of its current positon in the editor
+	
+	//the gun controller script
+	[SerializeField] private gunController gunController;
 
 	void Awake()
 	{
@@ -67,6 +66,7 @@ public class cameraController : MonoBehaviour
 
 	private void Start()
 	{
+		//getting caamera components so i cand disabled and enable them when i change views 
 		scopeCam = scopedCameraObj.GetComponent<Camera>();
 		normalCam = normalCameraObj.GetComponent<Camera>();
 		scopeCamAudio = scopeCam.GetComponent<AudioListener>();
@@ -75,17 +75,24 @@ public class cameraController : MonoBehaviour
 
 		pivotY = this.GetComponent<Transform>();
 
+		//settig the pitch and yaw of the camera to zero
 		pivotY.localEulerAngles = Vector3.zero;
 		pivotX.localEulerAngles = Vector3.zero;
 		currentCamPitch = 0;
 
+		//enabling the third person camera and disabling the first person cam. it starts in third person mode
 		scopeCam.enabled = false;
 		scopeCamAudio.enabled = false;
 		normalCam.enabled = true;
 		thirdPerson = true;
 		
+		//these components are used so the camera doesnt clip into the ground
 		cameraTF = normalCam.gameObject.GetComponent<Transform>();
 		maxDistance = cameraTF.localPosition.z;
+		
+		//locking the mousse so you cant see and it stays in the centre of the screen
+		Cursor.lockState = CursorLockMode.Locked;
+		Cursor.visible = false;
 	}
 
 	private void Update()
@@ -102,14 +109,22 @@ public class cameraController : MonoBehaviour
 		if (thirdPerson)
 		{
 			thirdPersonCamera();
+			maxCamPitch = 80f;
+			minCamPitch = -80f;
+			camSpeedX = 60f;
+			camSpeedY = 60f;
 		}
 
 		else
 		{
-			//the gun will now not follow the camera and use the input from the mouse/controller
 			//will handle ui elements while camera is fixed to the gun
-			
-			
+			thirdPersonCamera();
+			maxCamPitch = 7.781f;
+			minCamPitch = -25f;
+			//didnt have enough time to properly implemeent this it works the same way as the thirdperson camera but the camera is limited to same amount the turret is in pitch
+			//the camera will also move at the same speed as the yaw and pitch of the gun
+			camSpeedX = gunController.getTurretSpeed().x;
+			camSpeedY = gunController.getTurretSpeed().y;
 		}
 	}
 

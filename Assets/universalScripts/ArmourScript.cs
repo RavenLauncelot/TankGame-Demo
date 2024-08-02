@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ArmourScript : MonoBehaviour
@@ -61,9 +59,4 @@ public class ArmourScript : MonoBehaviour
 	{
 		return health/initialHealth;
 	}
-
-    private void OnCollisionEnter(Collision collision)
-    {
-		Debug.Log("gameobject that hit" + collision.gameObject.name);
-    }
 }
