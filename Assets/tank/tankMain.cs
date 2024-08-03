@@ -103,13 +103,13 @@ public class tankMain : MonoBehaviour
 		//updating the modifiers
 		//turret modifiers
 		float modifier = Mathf.Clamp(turretArmour.getHealthPercent(), 0.5f, 1f);		
-		modifier = modifier - Mathf.Clamp(Random.Range(0.0f, 0.8f) * (1f - turretArmour.getHealthPercent()),0 ,1);	
+		modifier = modifier - Mathf.Clamp(Random.Range(0.0f, 0.5f) * (1f - turretArmour.getHealthPercent()),0 ,1);	
 		turretMovement.modTurretPitch(modifier);
 		turretMovement.modTurretYaw(modifier);
 		
 		//base modifiers
 		modifier = Mathf.Clamp(baseArmour.getHealthPercent(), 0.5f, 1f);
-		modifier = modifier - Mathf.Clamp(Random.Range(0.0f, 0.8f) * (1f - baseArmour.getHealthPercent()),0, 1);
+		modifier = modifier - Mathf.Clamp(Random.Range(0.0f, 0.5f) * (1f - baseArmour.getHealthPercent()),0, 1);
 		setTorqueModifier(modifier);
 		setTurningModifier(modifier);
 		
@@ -117,7 +117,7 @@ public class tankMain : MonoBehaviour
 		//track modifiers
 		modifier = Mathf.Clamp(lTrackArmour.getHealthPercent(), 0.5f, 1f) + Mathf.Clamp(rTrackArmour.getHealthPercent(), 0.5f, 1f);
 		modifier /= 2f;   //finds the average health between the 2
-		modifier = modifier - Mathf.Clamp(Random.Range(0.0f, 0.8f) * (1f - turretArmour.getHealthPercent()), 0f, 1f);
+		modifier = modifier - Mathf.Clamp(Random.Range(0.0f, 0.5f) * (1f - turretArmour.getHealthPercent()), 0f, 1f);
 		setSpeedModifier(modifier);
 		
 		if (totalHealth < initialHealth/4f)
