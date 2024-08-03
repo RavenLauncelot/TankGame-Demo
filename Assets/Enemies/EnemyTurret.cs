@@ -7,6 +7,9 @@ using UnityEngine;
 
 public class EnemyTurret : MonoBehaviour
 {
+	//this code was abandoned due to time limitations
+	//code worked but didn't aim correctly 
+	
 	[SerializeField] private Transform pivot;
 
 	[SerializeField] private float range;
