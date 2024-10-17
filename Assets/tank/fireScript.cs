@@ -214,4 +214,16 @@ public class fireScript : MonoBehaviour
 			return ray.GetPoint(2000);
 		}
 	}
+
+
+	//these are for the hitChanceGUI to calulcate potential damage
+	public float getPenPower()
+	{
+		return penPower;
+	}
+
+	public float getDmg()
+	{
+		return damage;
+	}
 }
