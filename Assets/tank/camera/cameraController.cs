@@ -6,7 +6,8 @@ public class cameraController : MonoBehaviour
 	Transform pivotY;         //this is the pivots own transform
 	public Transform pivotX;  //this is a child transform of pivotY
 	Transform cameraTF;       //this is the camera itself
-	GameObject crosshair;     //this is crosshair gameobject
+	GameObject thirdCrosshair;     //this is crosshair gameobject
+	GameObject firstCrosshair;
 	
 	//inputactions these are for the controls
 	private InputAction zoomIn;
@@ -28,6 +29,7 @@ public class cameraController : MonoBehaviour
 
 	//these are for the camera mode its in. and campitch is used for keeping track of its pitch to stay within its limits
 	private bool thirdPerson;
+	public bool ThirdPerson { get { return thirdPerson; } }
 	private float currentCamPitch;
 
 	[SerializeField] private float camSpeedX;      //speed of the camera
@@ -69,9 +71,12 @@ public class cameraController : MonoBehaviour
 		//getting caamera components so i cand disabled and enable them when i change views 
 		scopeCam = scopedCameraObj.GetComponent<Camera>();
 		normalCam = normalCameraObj.GetComponent<Camera>();
+
 		scopeCamAudio = scopeCam.GetComponent<AudioListener>();
 		normalCamAudio = normalCam.GetComponent<AudioListener>();
-		crosshair = GameObject.Find("crosshair");
+
+		thirdCrosshair = GameObject.Find("thirdCrosshair");
+		firstCrosshair = GameObject.Find("firstCrosshair");
 
 		pivotY = this.GetComponent<Transform>();
 
@@ -83,6 +88,7 @@ public class cameraController : MonoBehaviour
 		//enabling the third person camera and disabling the first person cam. it starts in third person mode
 		scopeCam.enabled = false;
 		scopeCamAudio.enabled = false;
+		firstCrosshair.SetActive(false);
 		normalCam.enabled = true;
 		thirdPerson = true;
 		
@@ -90,17 +96,12 @@ public class cameraController : MonoBehaviour
 		cameraTF = normalCam.gameObject.GetComponent<Transform>();
 		maxDistance = cameraTF.localPosition.z;
 		
-		//locking the mousse so you cant see and it stays in the centre of the screen
+		//locking the mouse so you cant see and it stays in the centre of the screen
 		Cursor.lockState = CursorLockMode.Locked;
 		Cursor.visible = false;
 	}
 
 	private void Update()
-	{
-		
-	}
-
-	private void FixedUpdate()
 	{
 		//updating the turret input
 		turretVec = turretInput.ReadValue<Vector2>();
@@ -108,7 +109,7 @@ public class cameraController : MonoBehaviour
 		//check what camera mode its in. this is change in the camZoom method which is subscribed to an input action
 		if (thirdPerson)
 		{
-			thirdPersonCamera();
+			cameraMovement();
 			maxCamPitch = 80f;
 			minCamPitch = -80f;
 			camSpeedX = 60f;
@@ -118,7 +119,7 @@ public class cameraController : MonoBehaviour
 		else
 		{
 			//will handle ui elements while camera is fixed to the gun
-			thirdPersonCamera();
+			cameraMovement();
 			maxCamPitch = 7.781f;
 			minCamPitch = -25f;
 			//didnt have enough time to properly implemeent this it works the same way as the thirdperson camera but the camera is limited to same amount the turret is in pitch
@@ -140,7 +141,8 @@ public class cameraController : MonoBehaviour
 		thirdPerson = !thirdPerson;
 		
 		//making the crosshair appear or dissapear
-		crosshair.SetActive(thirdPerson);  //will be active when third person is active
+		thirdCrosshair.SetActive(thirdPerson);  //will be active when third person is active
+		firstCrosshair.SetActive(!thirdPerson);
 		
 		//canvas stuff - changing the ui depending on the view
 	}
@@ -150,7 +152,7 @@ public class cameraController : MonoBehaviour
 		return currentCamPitch;	
 	}
 	
-	public void thirdPersonCamera()
+	public void cameraMovement()
 	{
 		Vector3 turretCamY = new Vector3(0, 0, 0);
 		turretCamY.y = turretVec.x * camSpeedX * Time.deltaTime;

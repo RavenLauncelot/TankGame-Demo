@@ -22,7 +22,7 @@ public class ArmourScript : MonoBehaviour
 	
 	private void Update()
 	{
-		if (health == 0) 
+		if (health <= 0) 
 		{
 			rend.material.SetColor("_Color", Color.black);
 		}
@@ -41,8 +41,6 @@ public class ArmourScript : MonoBehaviour
 	public void giveDamage(float damage)
 	{
 		health -= damage;
-		
-		if (health < 0){ health = 0; }
 	}
 	
 	public string getName()
@@ -57,6 +55,13 @@ public class ArmourScript : MonoBehaviour
 	
 	public float getHealthPercent()
 	{
-		return health/initialHealth;
+		if (health < 0)
+		{
+			return 0;
+		}
+		else
+		{
+			return health / initialHealth;
+		}
 	}
 }

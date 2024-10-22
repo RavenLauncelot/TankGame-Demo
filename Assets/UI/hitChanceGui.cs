@@ -52,7 +52,8 @@ public class hitChanceGui : MonoBehaviour
             //from here we will use the same calulations the gun uses and then return this
 
             //this finds the angle of the ray and the surface normal it has hit
-            float angleOfHit = Vector3.Angle(gunPos.forward, hit.normal);
+            float angleOfHit = Vector3.Angle(gunPos.forward, -hit.normal);
+            
 
             //this turns the angle of hit into a mutilpier for the hit chance. lower the angle the higher chance.
             float angleFactor = (-1f / 90f * angleOfHit) + 1f;
@@ -75,6 +76,6 @@ public class hitChanceGui : MonoBehaviour
     private void updateGUIData(float penChanceGUI, float penPowerGUI ,float damage, float shellDamageGUI, float targetArmourGUI)
     {
         //this will update all the values on the GUI
-        targetInformation.text = "Target Data:\nArmour thickness: " + targetArmourGUI + "\nPotential damage: " + damage + "\n\nShell information:\n" + "Shell damage: " + shellDamageGUI + "\nPenetration Power: " + penPowerGUI + "\nPenetration chance: " + penChanceGUI;
+        targetInformation.text = "Target Data:\nArmour thickness: " + targetArmourGUI + "\nPotential damage: " + damage + "\n\nShell information:\n" + "Shell damage: " + shellDamageGUI + "\nPenetration Power: " + penPowerGUI + "\nPenetration chance: " + penChanceGUI*100 + "%";
     }
 }

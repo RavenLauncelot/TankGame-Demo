@@ -42,7 +42,7 @@ public class gunController : MonoBehaviour
 		PitchSpeed = maxPitchSpeed;
 	}
 
-	private void FixedUpdate()  //well be doing it in fixed update since this object is connected to a rigidbody
+	private void Update()  //well be doing it in fixed update since this object is connected to a rigidbody
 	{
 		currentCamPitch = camController.getCamXAngle();
 			
@@ -147,6 +147,8 @@ public class gunController : MonoBehaviour
 		}
 
 		YawSpeed = maxYawSpeed * modifier;
+
+		Debug.Log("Modifier TurretYaw: " + modifier);
 	}
 
 	public void modTurretPitch(float modifier)
@@ -157,7 +159,9 @@ public class gunController : MonoBehaviour
 		}
 
 		PitchSpeed = maxPitchSpeed * modifier;
-	}
+
+        Debug.Log("Modifier TurretPitch: " + modifier);
+    }
 	
 	public Vector2 getTurretSpeed()
 	{

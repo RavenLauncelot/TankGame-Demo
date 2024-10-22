@@ -25,7 +25,7 @@ public class firingCube : MonoBehaviour
         
     }
 
-    private void OnParticleCollision(GameObject other)  //this is when the particle hits something. the particle system will be set to ignore the player so it wont hit itself when its fired
+    private void OnParticleCollision(GameObject other)  //this is when the particle hits something
     {
         if (other.GetComponentInChildren<ArmourScript>() != null)
         {
