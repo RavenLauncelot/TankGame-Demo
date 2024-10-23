@@ -6,7 +6,9 @@ using UnityEngine.UI;
 public class HealthUI : MonoBehaviour
 {
     ArmourScript[] armourScripts;
-    [SerializeField] tankMain TankMain;
+    tankMain TankMain;
+    TankMovement tankMovement;
+    gunController GunController;
 
     [SerializeField] private Text healthUI;
 
@@ -14,6 +16,9 @@ public class HealthUI : MonoBehaviour
     void Start()
     {
         armourScripts = GetComponentsInChildren<ArmourScript>();
+        TankMain = GetComponent<tankMain>();
+        tankMovement = GetComponent<TankMovement>();
+        GunController = GetComponentInChildren<gunController>();
     }
 
     // Update is called once per frame
@@ -32,7 +37,10 @@ public class HealthUI : MonoBehaviour
             updateText = updateText + armourScripts[i].getName() + ": " + armourScripts[i].getHealthPercent() * 100f + "%\n";
         }
 
-
+        //adding more text for the performance of the certain parts of the vehicle
+        updateText = updateText + "\nEngine power: " + tankMovement.getEnginePerformance() * 100 + "%\n";
+        updateText = updateText + "Track speed: " + tankMovement.getSpeedPerformance() * 100 + "%\n";
+        updateText = updateText + "Turret speed" + GunController.getTurretSpeedEfficiency() * 100 + "%";
 
         healthUI.text = updateText;
     }

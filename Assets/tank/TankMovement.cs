@@ -201,13 +201,13 @@ public class TankMovement : MonoBehaviour
         currentMaxSpeed = maxSpeed * mod;
     }
 
-    public float getEnginePower()
+    public float getEnginePerformance()
     {
-        return currentTorque;
+        return currentTorque/maxMotorPower;
     }
 
-    public float getMaxSpeed()
+    public float getSpeedPerformance()
     {
-        return currentMaxSpeed;
+        return currentMaxSpeed/maxSpeed;
     }
 }

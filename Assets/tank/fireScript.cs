@@ -96,16 +96,10 @@ public class fireScript : MonoBehaviour
 	{
 		string type = "";
 		shellType++;
-		if (shellType > 2){ shellType = 0; }
+		if (shellType > 1){ shellType = 0; }
 		
 		switch(shellType)
-		{
-		case 2:
-			damage = 400;
-			penPower = 200;
-			type = "HE";
-			break;
-			
+		{	
 		case 1:
 			damage = 200;
 			penPower = 400;

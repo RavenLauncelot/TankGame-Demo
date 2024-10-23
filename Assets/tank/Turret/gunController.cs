@@ -165,6 +165,13 @@ public class gunController : MonoBehaviour
 	
 	public Vector2 getTurretSpeed()
 	{
-		return new Vector2(PitchSpeed, YawSpeed);
+		
+		return new Vector2(YawSpeed, PitchSpeed);
+	}
+
+	public float getTurretSpeedEfficiency()
+	{
+		//the percentage for both yaw and pitch will be the same with their current and max values
+		return YawSpeed/maxYawSpeed;
 	}
 }

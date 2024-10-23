@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 public class tankMain : MonoBehaviour
 {
-
 	private TankControls controls;  //geting the script generated from the unity input system
 
 	//I need these to adjust the values for when a part gets damaged
@@ -15,9 +14,6 @@ public class tankMain : MonoBehaviour
 	//setting up the individual control inputs
 	private InputAction movement;
 	private InputAction turret;
-
-	//these will hold the values of the inputs during the update method alot shorter than left.readvalue<float>() so makes it a bit more readable and it will only need to get the input once everyframe rather than whenever its used.
-	private Vector2 movementVecIn;
 
 	//getting all the necesarray objects and components that make up the tank so that i can access all their properties
 	[SerializeField] private GameObject TankTrackL ,TankTrackR;
@@ -32,22 +28,8 @@ public class tankMain : MonoBehaviour
 	private float totalHealth;
 	private float initialHealth;
 
-	private WheelCollider[] leftTrack;
-	private WheelCollider[] rightTrack;
-
 	Rigidbody RB;
 	Transform TF;
-
-	//variables for things like speed
-	[SerializeField] private float turnSpeed;
-	[SerializeField] private float speed;
-	[SerializeField] private float torque;
-	[SerializeField] private float brakingTorque;
-	
-	[SerializeField] private float maxTurnSpeed = 250;
-	[SerializeField] private float maxSpeed = 1000;
-	[SerializeField] private float maxTorque = 2000;
-	[SerializeField] private float maxBrakingTorque = 2000;
 
 	void Awake()
 	{
@@ -59,13 +41,6 @@ public class tankMain : MonoBehaviour
 		turretMovement = gameObject.GetComponentInChildren<gunController>();
 		fireScript = gameObject.GetComponentInChildren<fireScript>();
 		tankMovement = gameObject.GetComponent<TankMovement>();
-
-		//enabling each control for the tank 
-		movement = controls.Tank.movement;
-		turret = controls.Tank.turret;
-
-		movement.Enable();
-		turret.Enable();
 
 		RB = this.GetComponent<Rigidbody>();
 		TF = this.GetComponent<Transform>();
@@ -80,25 +55,12 @@ public class tankMain : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
 	{		
-		//setting up the wheel colliders 
-		leftTrack = TankTrackL.GetComponentsInChildren<WheelCollider>();
-		rightTrack = TankTrackR.GetComponentsInChildren<WheelCollider>();	
-		
-		totalHealth = turretArmour.getHealth() + baseArmour.getHealth() + lTrackArmour.getHealth() + rTrackArmour.getHealth();
-		initialHealth = totalHealth;
 
-		brakingTorque = maxBrakingTorque;
-		turnSpeed = maxTurnSpeed;
-		torque = maxTorque;
-		speed = maxSpeed;
 	}
-	
-
 
 	// Update is called once per frame
 	void Update()
 	{ 
-		movementVecIn = movement.ReadValue<Vector2>();
 		
 		//updating damage things 
 		totalHealth = turretArmour.getHealth() + baseArmour.getHealth() + lTrackArmour.getHealth() + rTrackArmour.getHealth();
