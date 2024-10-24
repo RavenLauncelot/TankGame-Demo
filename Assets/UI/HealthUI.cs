@@ -38,9 +38,9 @@ public class HealthUI : MonoBehaviour
         }
 
         //adding more text for the performance of the certain parts of the vehicle
-        updateText = updateText + "\nEngine power: " + tankMovement.getEnginePerformance() * 100 + "%\n";
-        updateText = updateText + "Track speed: " + tankMovement.getSpeedPerformance() * 100 + "%\n";
-        updateText = updateText + "Turret speed" + GunController.getTurretSpeedEfficiency() * 100 + "%";
+        updateText = updateText + "\nEngine power: " + Mathf.Round(tankMovement.getEnginePerformance() * 100) + "%\n";
+        updateText = updateText + "Track speed: " + Mathf.Round(tankMovement.getSpeedPerformance() * 100) + "%\n";
+        updateText = updateText + "Turret speed" + Mathf.Round(GunController.getTurretSpeedEfficiency() * 100) + "%";
 
         healthUI.text = updateText;
     }

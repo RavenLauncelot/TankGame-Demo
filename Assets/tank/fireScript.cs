@@ -107,7 +107,7 @@ public class fireScript : MonoBehaviour
 			break;
 			
 		case 0:
-			damage = 300;
+			damage = 250;
 			penPower = 300;
 			type = "Standard";
 			break;
@@ -175,7 +175,10 @@ public class fireScript : MonoBehaviour
 				//this could result in higher damage if the armour is weak
 				float damageGiven = (penPower / armourThickness) * damage;
 
-				if (damageGiven > damage) { damageGiven = damage; }  //this counters having very high damage against weak armour so that shells dont go above their damage
+				if (damageGiven > damage) //this counters having very high damage against weak armour so that shells dont go above their damage
+                { 
+					damageGiven = damage; 
+				}  
 
 				targetArmour.giveDamage(damageGiven);
 				shotReportUI.text = "Last shot: hit!";

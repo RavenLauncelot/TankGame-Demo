@@ -62,6 +62,10 @@ public class hitChanceGui : MonoBehaviour
             penChance = (angleFactor * penPower) / armourThickness;
 
             potentialDamage = (penPower / armourThickness) * shellDamage;
+            if (potentialDamage > shellDamage)
+            {
+                potentialDamage = shellDamage;
+            }
         }
 
         //if its hit something but i cant be dealt damage
@@ -76,6 +80,6 @@ public class hitChanceGui : MonoBehaviour
     private void updateGUIData(float penChanceGUI, float penPowerGUI ,float damage, float shellDamageGUI, float targetArmourGUI)
     {
         //this will update all the values on the GUI
-        targetInformationUI.text = "Target Data:\nArmour thickness: " + targetArmourGUI + "\nPotential damage: " + damage + "\n\nShell information:\n" + "Shell damage: " + shellDamageGUI + "\nPenetration Power: " + penPowerGUI + "\nPenetration chance: " + penChanceGUI*100 + "%";
+        targetInformationUI.text = "Target Data:\nArmour thickness: " + targetArmourGUI + "\nPotential damage: " + damage + "\n\nShell information:\n" + "Shell damage: " + shellDamageGUI + "\nPenetration Power: " + penPowerGUI + "\nPenetration chance: " + Mathf.Round(penChanceGUI*100) + "%";
     }
 }
