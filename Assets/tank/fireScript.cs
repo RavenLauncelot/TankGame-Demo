@@ -9,20 +9,20 @@ public class fireScript : MonoBehaviour
 	TankControls controls;
 	InputAction fire;
 	InputAction changeShell;
-	
+
 	Rigidbody mainRB;
-	
+
 	Transform TF;
 	Transform turretTF;
-	
+
 	ParticleSystem particleSys;
 	List<ParticleCollisionEvent> colEvents = new List<ParticleCollisionEvent>();
-	public GameObject ricochetEffect;
-	public GameObject hitEffect;
-	
+	[SerializeField] private GameObject ricochetEffect;
+	[SerializeField] private GameObject hitEffect;
+
 	bool canfire;
-	public float reloadTime;
-	public float recoilPower;
+	[SerializeField] private float reloadTime;
+    [SerializeField] private float recoilPower;
 	//variables for different type of shells
 	float penPower;
 	float damage;
@@ -101,8 +101,8 @@ public class fireScript : MonoBehaviour
 		switch(shellType)
 		{	
 		case 1:
-			damage = 200;
-			penPower = 400;
+			damage = 150;
+			penPower = 600;
 			type = "AP";
 			break;
 			

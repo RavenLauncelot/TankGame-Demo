@@ -8,7 +8,7 @@ public class hitChanceGui : MonoBehaviour
     [SerializeField] private Transform gunPos;
     [SerializeField] private fireScript fireScript;
 
-    [SerializeField] private Text targetInformation;   
+    [SerializeField] private Text targetInformationUI;   
 
     // Start is called before the first frame update
     void Start()
@@ -76,6 +76,6 @@ public class hitChanceGui : MonoBehaviour
     private void updateGUIData(float penChanceGUI, float penPowerGUI ,float damage, float shellDamageGUI, float targetArmourGUI)
     {
         //this will update all the values on the GUI
-        targetInformation.text = "Target Data:\nArmour thickness: " + targetArmourGUI + "\nPotential damage: " + damage + "\n\nShell information:\n" + "Shell damage: " + shellDamageGUI + "\nPenetration Power: " + penPowerGUI + "\nPenetration chance: " + penChanceGUI*100 + "%";
+        targetInformationUI.text = "Target Data:\nArmour thickness: " + targetArmourGUI + "\nPotential damage: " + damage + "\n\nShell information:\n" + "Shell damage: " + shellDamageGUI + "\nPenetration Power: " + penPowerGUI + "\nPenetration chance: " + penChanceGUI*100 + "%";
     }
 }

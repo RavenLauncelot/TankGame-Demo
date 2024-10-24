@@ -152,7 +152,7 @@ public class cameraController : MonoBehaviour
 		return currentCamPitch;	
 	}
 	
-	public void cameraMovement()
+	private void cameraMovement()
 	{
 		Vector3 turretCamY = new Vector3(0, 0, 0);
 		turretCamY.y = turretVec.x * camSpeedX * Time.deltaTime;
@@ -193,10 +193,5 @@ public class cameraController : MonoBehaviour
 		{
 			return ray.GetPoint(2000);
 		}
-	}
-	
-	public bool isThirdPerson()
-	{
-		return thirdPerson;
 	}
 }

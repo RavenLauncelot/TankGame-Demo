@@ -83,7 +83,7 @@ public class TankMovement : MonoBehaviour
         }
 
         //this checks if the speed is low and enough and steering input is high enouhg for it start pivot turning
-        else if (Mathf.Abs(currentSpeed) < 1 & Mathf.Abs(xInput) > 0.8f)  //turns on brake and rotates more or less on the spot
+        else if (Mathf.Abs(currentSpeed) < 5 & Mathf.Abs(xInput) > 0.8f)  //turns on brake and rotates more or less on the spot
         {
             pivotAllWheelPower(power, xInput);
         }

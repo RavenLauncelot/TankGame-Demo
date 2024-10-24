@@ -131,7 +131,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8173404572364752436}
-  - component: {fileID: 5374892486566305984}
+  - component: {fileID: 6176917263762576838}
   - component: {fileID: 2945590472165351075}
   m_Layer: 0
   m_Name: TankDummy
@@ -148,7 +148,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3170935971281243259}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.96718395, z: -0, w: -0.25407726}
+  m_LocalRotation: {x: -0, y: -0.9671836, z: 0, w: -0.25407863}
   m_LocalPosition: {x: -206.9, y: 3.77, z: 109.46}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -159,7 +159,7 @@ Transform:
   - {fileID: 5122424895154122925}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -209.438, z: 0}
---- !u!114 &5374892486566305984
+--- !u!114 &6176917263762576838
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -168,13 +168,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 3170935971281243259}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9e114caeff1e5a343958e1537cd6ea08, type: 3}
+  m_Script: {fileID: 11500000, guid: 8cc0a7f3e955bbe4b8c379bfecb92933, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tankBase: {fileID: 746916192608021296}
-  tankTurret: {fileID: 4733205084940386005}
-  trackL: {fileID: 7680527416478577798}
-  trackR: {fileID: 8274636736963777504}
+  armouredParts:
+  - {fileID: 746916192608021296}
+  - {fileID: 4733205084940386005}
+  - {fileID: 7680527416478577798}
+  - {fileID: 8274636736963777504}
+  totalHealth: 0
 --- !u!54 &2945590472165351075
 Rigidbody:
   m_ObjectHideFlags: 0

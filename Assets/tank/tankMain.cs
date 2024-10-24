@@ -31,11 +31,6 @@ public class tankMain : MonoBehaviour
 	Rigidbody RB;
 	Transform TF;
 
-	void Awake()
-	{
-		controls = new TankControls();
-	}
-
 	void OnEnable()
 	{
 		turretMovement = gameObject.GetComponentInChildren<gunController>();
@@ -46,17 +41,12 @@ public class tankMain : MonoBehaviour
 		TF = this.GetComponent<Transform>();
 	}
 
-	void OnDisable()
-	{
-		controls.Disable();
-	}
-
-
 	// Start is called before the first frame update
 	void Start()
-	{		
-
-	}
+	{
+        totalHealth = turretArmour.getHealth() + baseArmour.getHealth() + lTrackArmour.getHealth() + rTrackArmour.getHealth();
+		initialHealth = totalHealth;
+    }
 
 	// Update is called once per frame
 	void Update()
@@ -78,7 +68,6 @@ public class tankMain : MonoBehaviour
 		tankMovement.setTorqueModifier(modifier);
 		
 		
-		
 		//track modifiers
 		modifier = Mathf.Clamp(lTrackArmour.getHealthPercent(), 0.5f, 1f) + Mathf.Clamp(rTrackArmour.getHealthPercent(), 0.5f, 1f);
 		modifier /= 2f;   //finds the average health between the 2
@@ -94,7 +83,7 @@ public class tankMain : MonoBehaviour
 
 	public float getHealthPercentage()
 	{
-		return initialHealth/totalHealth;
+		return totalHealth/initialHealth;
 	}
 }
 

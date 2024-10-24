@@ -73,7 +73,7 @@ public class gunController : MonoBehaviour
 	
 	//this finds the local rotation of the vector from the tank gun to the localpostion of the ray in relation to the turretReferencePoint and gunReferencePoint
 	//for th turret and gun respectively
-	public Quaternion getTargetDirection(string axis)    
+	private Quaternion getTargetDirection(string axis)    
 	{
 		Vector3 direction = new Vector3(0,0,0);
 		Quaternion rotationDifference;
